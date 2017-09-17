@@ -52,7 +52,7 @@ def train_or_evaluate_epoch(model, data, Train = True,
     return average_loss
 
 '''
-    Problem a:
+    Problem a and b:
 '''
 def get_loss_one_time(learning_rt = 0.1, momentum = .0, NLL=True):
     model = NN_3_layer()
@@ -89,7 +89,7 @@ def plot_loss_average(info = 'cross_entropy_loss', ymax = 1, NLL=True):
     '''
     Plot the loss
     '''
-    plt.figure()
+    fig = plt.figure()
     plt.plot(Train_loss,"g-",label="traindata")
     plt.plot(Valid_loss,"r-.",label="validdata")
 
@@ -101,8 +101,22 @@ def plot_loss_average(info = 'cross_entropy_loss', ymax = 1, NLL=True):
 
     plt.grid(True)
     plt.legend()
-    return plt
+    return fig
 
+# Problem a
+'''
+fig = plot_loss_average(info = 'cross_entropy_loss', ymax = 1, NLL=True)
+fig.savefig('problem_a.png')
+'''
+# Problem b
+'''
+fig = plot_loss_average(info = 'incorrect classification ratio', ymax = 0.5, NLL=False)
+fig.savefig('problem_b.png')
+'''
+
+'''
+    Problem c
+'''
 def plot_visulizing_parameter(samples, num):
     fig = plt.figure(figsize=(num, num))
     gs = gridspec.GridSpec(num, num)
@@ -117,17 +131,6 @@ def plot_visulizing_parameter(samples, num):
         plt.imshow(sample.reshape(28, 28), cmap='Greys_r')
 
     return fig
-
-# Problem a
-'''
-fig = plot_loss_average(info = 'cross_entropy_loss', ymax = 1, NLL=True)
-fig.savefig('problem_a.png')
-'''
-# Problem b
-'''
-fig = plot_loss_average(info = 'incorrect classification ratio', ymax = 0.5, NLL=False)
-fig.savefig('problem_b.png')
-'''
 # Problem c
 '''
 _, _, model = get_loss_one_time(NLL=True)
@@ -135,7 +138,66 @@ fig = plot_visulizing_parameter(np.transpose(model.layer1.W[:-1,:]), 10)
 fig.savefig('problem_c.png')
 '''
 
-# Problem 
+'''
+    Problem d
+'''
+def plot_problem_d_learning_rt(info, ymax, NLL):
+
+    _, Valid_loss_001 , _ = get_loss_one_time(learning_rt = 0.01, momentum = .0, NLL=NLL)
+    _, Valid_loss_01 , _ = get_loss_one_time(learning_rt = 0.1, momentum = .0, NLL=NLL)
+    _, Valid_loss_02 , _ = get_loss_one_time(learning_rt = 0.2, momentum = .0, NLL=NLL)
+    _, Valid_loss_05 , _ = get_loss_one_time(learning_rt = 0.5, momentum = .0, NLL=NLL)
+
+    fig = plt.figure()
+    plt.plot(Valid_loss_001,"g-",label="learning_rt = 0.01")
+    plt.plot(Valid_loss_01,"r-",label="learning_rt = 0.1")
+    plt.plot(Valid_loss_02,"m-",label="learning_rt = 0.2")
+    plt.plot(Valid_loss_05,"k-",label="learning_rt = 0.5")
+
+    plt.xlabel("epoches")
+    plt.ylabel("error")
+    plt.title(info)
+
+    plt.ylim(0,ymax)
+
+    plt.grid(True)
+    plt.legend()
+    return plt
+
+def plot_problem_d_momentum(info, ymax, NLL):
+
+    _, Valid_loss_0 , _ = get_loss_one_time(learning_rt = 0.1, momentum = .0, NLL=NLL)
+    _, Valid_loss_5 , _ = get_loss_one_time(learning_rt = 0.1, momentum = .5, NLL=NLL)
+    _, Valid_loss_9 , _ = get_loss_one_time(learning_rt = 0.1, momentum = .9, NLL=NLL)
+
+    fig = plt.figure()
+    plt.plot(Valid_loss_0,"g-",label="momentum = 0.0")
+    plt.plot(Valid_loss_5,"r-",label="momentum = 0.5")
+    plt.plot(Valid_loss_9,"m-",label="momentum = 0.9")
+
+    plt.xlabel("epoches")
+    plt.ylabel("error")
+    plt.title(info)
+
+    plt.ylim(0,ymax)
+
+    plt.grid(True)
+    plt.legend()
+    return plt
+
+'''
+Problem d
+fig = plot_problem_d_learning_rt('cross_entropy_loss', 2, NLL=True)
+fig.savefig('problem_d_learning_rt_cross_entropy.png')
+'''
+fig = plot_problem_d_learning_rt('incorrect classification ratio', 1, NLL=False)
+fig.savefig('problem_d_learning_rt_IC.png')
+
+
+fig = plot_problem_d_momentum('cross_entropy_loss', 3, NLL=True)
+fig.savefig('problem_d_momentum_cross_entropy.png')
+fig = plot_problem_d_momentum('incorrect classification ratio', 1, NLL=False)
+fig.savefig('problem_d_momentum_IC.png')
 
 
 
