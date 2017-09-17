@@ -57,7 +57,7 @@ def get_loss_one_time(NLL=True):
     Train_loss = []
     Valid_loss = []
 
-    for i in range(21):
+    for i in range(201):
         '''
         First Evaluate:
         '''
@@ -76,8 +76,8 @@ def get_loss_one_time(NLL=True):
     return Train_loss, Valid_loss, model
 
 def plot_loss_average(info = 'cross_entropy_loss', ymax = 1, NLL=True):
-    Train_loss = np.zeros(21)
-    Valid_loss = np.zeros(21)
+    Train_loss = np.zeros(201)
+    Valid_loss = np.zeros(201)
     for _ in range(5):
         train_loss, valid_loss, _ = get_loss_one_time(NLL)
         Train_loss += 0.2*np.array(train_loss)
@@ -98,7 +98,7 @@ def plot_loss_average(info = 'cross_entropy_loss', ymax = 1, NLL=True):
 
     plt.grid(True)
     plt.legend()
-    plt.show()
+    return plt
 
 def plot(samples, num):
     fig = plt.figure(figsize=(num, num))
@@ -116,10 +116,14 @@ def plot(samples, num):
     return fig
 
 # Problem a
-#plot_loss_average(info = 'cross_entropy_loss', ymax = 1, NLL=True)
-
+'''
+fig = plot_loss_average(info = 'cross_entropy_loss', ymax = 1, NLL=True)
+fig.savefig('problem_a.png')
+'''
 # Problem b
-#plot_loss_average(info = 'incorrect classification ratio', ymax = 0.5, NLL=False)
+
+fig = plot_loss_average(info = 'incorrect classification ratio', ymax = 0.5, NLL=False)
+fig.savefig('problem_b.png')
 
 # Problem c
 '''
