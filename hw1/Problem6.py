@@ -1,121 +1,134 @@
 import numpy as np
-import math
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+from nn import NN_3_layer
 
-# now, batch=1
-class Linear():
+BATCH_SIZE = 32
+train_data = np.genfromtxt('data/digitstrain.txt', delimiter=',')
+valid_data = np.genfromtxt('data/digitsvalid.txt', delimiter=',')
 
-    def __init__(self, input_dim, output_dim):
-        '''
-        Augument:
-            input_dim: int
-            output_dim: int
-        '''
-        self.input_dim = input_dim
-        self.output_dim = output_dim
-        # W: input_dim+1, output_dim
-        # initilize
-        self.W = (2*np.random.rand(input_dim+1, output_dim)-1)\
-                *math.sqrt(6)/math.sqrt(input_dim+output_dim)
-        self.W[-1,:]=0
-        self.X = None
-        self.grad_W = None
+def train_or_evaluate_epoch(model, data, Train = True, learning_rt = 0.1, NLL = True):
+    # Train = True means the model will be trained, otherwise, only evaluate it
+    # NLL = True means it will output the cross_entropy_loss, otherwise, it will output 
+    #  incorrect classification ratio.
 
-    def forward(self, X):
-        '''
-        Augument:
-            X: [batch_size, input_dim] Float
-        Return: 
-            O = X * W:[batch_size, ouput_dim] Float
-        '''
-        # Check dimention
-        self.batch_size, input_dim = X.shape
-        assert input_dim == self.input_dim
-        # transfer X to (X, 1)
-        self.X = np.concatenate((X, np.ones((batch_size,1))), axis = 1)
-        #print 'X shape', X.shape
-        #print 'W shape', self.W.shape
-        self.output = self.X.dot(self.W)
-        return self.output
+    def train_or_evaluate_batch(model, sentences, Train = True, learning_rt = 0.1, NLL = True):
+        batch_size = len(sentences)
+        batch_data = np.array(sentences)
+        X = batch_data[:,:-1]
+        Labels = np.zeros((batch_size, 10))
+        Labels[np.arange(batch_size), batch_data[:, -1].astype(int)]=1
 
-    def backward(self, grad_in):
-        '''
-        Augument:
-            grad_in: [batch_size, output_dim] Float
-        Return: 
-            grad_out = [batch_size, input_dim] Float
-        '''
-        batch_size, output_dim = grad_in.shape
-        assert batch_size == self.batch_size
-        assert output_dim == self.output_dim
-        self.grad_W = self.X.T.dot(grad_in)
-        grad_out = grad_in.dot(self.W.T)
-        return grad_out
+        if NLL:
+            loss = model.get_NLL_loss(X, Labels)
+        else:
+            loss = model.get_IC_loss(X, Labels)
 
-class Softmax_Cross_Entropy():
+        if Train:
+            model.backward(Labels, learning_rt)
 
-    def __init__(self):
-        self.Softmax = None
-        self.Labels = None
+        return loss        
 
-    def forward(self, X, Labels):
-        '''
-        Augument:
-            X: [batch_size, input_dim] Float
-            Labels: [batch_size, input_dim] one-hot 
-        Return:
-            Cross_Entropy_Loss: Float
-        '''
-        self.Labels = Labels
-        # Softmax Part
-        batch_size, input_dim = X.shape
-        X_exp = np.exp(X)
-        #print 'X_exp:', X_exp
-        self.Softmax = np.transpose(X_exp.T/np.sum(X_exp, axis=1))
-        #print 'Softmax_output', Softmax_output
 
-        # Cross Entropy Loss
-        LogSoftmax = np.log(self.Softmax)
-        #print 'LogSoftmax', LogSoftmax
-        loss = - np.sum(LogSoftmax * Labels, axis = 1)
-        #print 'loss:', loss
-        return np.sum(loss)
+    sentences = []
+    sum_loss = 0
+    for i, index in enumerate(np.random.permutation(len(data))):
+        # Prepare batch dataset
+        sentences.append(data[index])
+        if len(sentences) == BATCH_SIZE:
+            # Train the model
+            loss = train_or_evaluate_batch(model, sentences, Train, learning_rt, NLL)
+            #print loss
+            sum_loss += loss
+            # Clear old batch
+            sentences = []
 
-    def backward(self):
-        '''
-        Return:
-            grad_out: [batch_size, input_dim] Float
-        '''
-        grad_out = self.Softmax - self.Labels 
-        return grad_out
+    if len(sentences) != 0:
+        loss = train_or_evaluate_batch(model, sentences, Train, learning_rt, NLL)
+        sum_loss += loss
+    average_loss = sum_loss * 1.0 / len(data) 
+    return average_loss
 
-class Sigmoid():
-    def __init__(self):
-        self.output = None
-        self.batch_size = None
-        self.output_dim = None 
+'''
+    Problem a:
+'''
+def get_loss_one_time(NLL=True):
+    model = NN_3_layer()
+    Train_loss = []
+    Valid_loss = []
 
-    def forward(self, X):
+    for i in range(21):
         '''
-        Augument:
-            X: [batch_size, input_dim] Float
-        Return:
-            Output: [batch_size, input_dim] Float
+        First Evaluate:
         '''
-        self.batch_size, self.input_dim = X.shape
-        self.output = 1.0/(1.0+np.exp(-X))
-        return self.output
+        train_loss = train_or_evaluate_epoch(model, train_data, Train = False, NLL = NLL)
+        # print 'train_loss:', train_loss
+        valid_loss = train_or_evaluate_epoch(model, valid_data, Train = False, NLL = NLL)
+        Train_loss.append(train_loss)
+        Valid_loss.append(valid_loss)
+        print 'Epoch num:', i, 'train_loss:', train_loss, 'valid_loss:', valid_loss
 
-    def backward(self, grad_in):
         '''
-        Augument:
-            grad_in: [batch_size, input_dim] Float
-        Return:
-            grad_out: [batch_size, input_dim] Float
+        Second Train:
         '''
-        batch_size, output_dim = grad_in.shape
-        assert batch_size == self.batch_size
-        assert output_dim == self.output_dim
-        grad_out = grad_in * self.output * (1-self.output)
-        return grad_out
+        train_or_evaluate_epoch(model, train_data, Train = True, learning_rt = 0.1, NLL = NLL)
+
+    return Train_loss, Valid_loss, model
+
+def plot_loss_average(info = 'cross_entropy_loss', ymax = 1, NLL=True):
+    Train_loss = np.zeros(21)
+    Valid_loss = np.zeros(21)
+    for _ in range(5):
+        train_loss, valid_loss, _ = get_loss_one_time(NLL)
+        Train_loss += 0.2*np.array(train_loss)
+        Valid_loss += 0.2*np.array(valid_loss)
+
+    '''
+    Plot the loss
+    '''
+    plt.figure()
+    plt.plot(Train_loss,"g-",label="traindata")
+    plt.plot(Valid_loss,"r-.",label="validdata")
+
+    plt.xlabel("epoches")
+    plt.ylabel("error")
+    plt.title(info)
+
+    plt.ylim(0,ymax)
+
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+def plot(samples, num):
+    fig = plt.figure(figsize=(num, num))
+    gs = gridspec.GridSpec(num, num)
+    gs.update(wspace=0.05, hspace=0.05)
+
+    for i, sample in enumerate(samples):
+        ax = plt.subplot(gs[i])
+        plt.axis('off')
+        ax.set_xticklabels([])
+        ax.set_yticklabels([])
+        ax.set_aspect('equal')
+        plt.imshow(sample.reshape(28, 28), cmap='Greys_r')
+
+    return fig
+
+# Problem a
+#plot_loss_average(info = 'cross_entropy_loss', ymax = 1, NLL=True)
+
+# Problem b
+#plot_loss_average(info = 'incorrect classification ratio', ymax = 0.5, NLL=False)
+
+# Problem c
+'''
+_, _, model = get_loss_one_time(NLL=True)
+fig = plot(np.transpose(model.layer1.W[:-1,:]), 10)
+fig.savefig('problem_c.png')
+'''
+
+# Problem 
+
 
 
