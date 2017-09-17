@@ -54,8 +54,8 @@ def train_or_evaluate_epoch(model, data, Train = True,
 '''
     Problem a and b:
 '''
-def get_loss_one_time(learning_rt = 0.1, momentum = .0, NLL=True):
-    model = NN_3_layer()
+def get_loss_one_time(learning_rt = 0.1, momentum = .0, NLL=True, hidden_dim = 100):
+    model = NN_3_layer(hidden_dim)
     Train_loss = []
     Valid_loss = []
 
@@ -162,7 +162,7 @@ def plot_problem_d_learning_rt(info, ymax, NLL):
 
     plt.grid(True)
     plt.legend()
-    return plt
+    return fig
 
 def plot_problem_d_momentum(info, ymax, NLL):
 
@@ -183,13 +183,13 @@ def plot_problem_d_momentum(info, ymax, NLL):
 
     plt.grid(True)
     plt.legend()
-    return plt
+    return fig
 
+# Problem d
 '''
-Problem d
 fig = plot_problem_d_learning_rt('cross_entropy_loss', 2, NLL=True)
 fig.savefig('problem_d_learning_rt_cross_entropy.png')
-'''
+
 fig = plot_problem_d_learning_rt('incorrect classification ratio', 1, NLL=False)
 fig.savefig('problem_d_learning_rt_IC.png')
 
@@ -198,6 +198,57 @@ fig = plot_problem_d_momentum('cross_entropy_loss', 3, NLL=True)
 fig.savefig('problem_d_momentum_cross_entropy.png')
 fig = plot_problem_d_momentum('incorrect classification ratio', 1, NLL=False)
 fig.savefig('problem_d_momentum_IC.png')
+'''
+
+'''
+    Problem e
+'''
+def plot_problem_e():
+    Train_loss_20, Valid_loss_20 , _ = get_loss_one_time(learning_rt = 0.01, momentum = .5, hidden_dim = 20)
+    Train_loss_100, Valid_loss_100 , _ = get_loss_one_time(learning_rt = 0.01, momentum = .5, hidden_dim = 100)
+    Train_loss_200, Valid_loss_200 , _ = get_loss_one_time(learning_rt = 0.01, momentum = .5, hidden_dim = 200)
+    Train_loss_500, Valid_loss_500 , _ = get_loss_one_time(learning_rt = 0.01, momentum = .5, hidden_dim = 500)
+
+    fig = plt.figure()
+    p1 = plt.subplot(211)
+    p2 = plt.subplot(212)
+
+    p1.plot(Train_loss_20,"g-",label="hidden_dim = 20")
+    p1.plot(Train_loss_100,"r-",label="hidden_dim = 100")
+    p1.plot(Train_loss_200,"m-",label="hidden_dim = 200")
+    p1.plot(Train_loss_500,"k-",label="hidden_dim = 500")
+
+    p1.set_xlabel("epoches")
+    p1.set_ylabel("error")
+    p1.set_title("Train: cross_entropy_loss")
+
+    p1.set_ylim(0,0.8)
+
+    p1.grid(True)
+    p1.legend()
+
+    p2.plot(Valid_loss_20,"g-",label="hidden_dim = 20")
+    p2.plot(Valid_loss_100,"r-",label="hidden_dim = 100")
+    p2.plot(Valid_loss_200,"m-",label="hidden_dim = 200")
+    p2.plot(Valid_loss_500,"k-",label="hidden_dim = 500")
+
+    p2.set_xlabel("epoches")
+    p2.set_ylabel("error")
+    p2.set_title("Valid: cross_entropy_loss")
+
+    p2.set_ylim(0.2,0.8)
+
+    p2.grid(True)
+    p2.legend()
+    return fig
+
+# Problem e
+'''
+fig = plot_problem_e()
+fig.savefig('problem_e.png')
+'''
+
+
 
 
 

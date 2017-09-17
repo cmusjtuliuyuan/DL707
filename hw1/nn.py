@@ -109,10 +109,10 @@ class Sigmoid():
         return grad_out
 
 class NN_3_layer():
-    def __init__(self):
-        self.layer1 = Linear(784, 100)
+    def __init__(self, hidden_dim = 100):
+        self.layer1 = Linear(784, hidden_dim)
         self.act = Sigmoid()
-        self.layer2 = Linear(100, 10)
+        self.layer2 = Linear(hidden_dim, 10)
         self.loss = Softmax_Cross_Entropy()
 
     def get_NLL_loss(self, X, Labels):
