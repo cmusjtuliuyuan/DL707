@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-from nn import NN_3_layer
+from nn import NN_3_layer, NN_4_layer
 
 BATCH_SIZE = 32
 train_data = np.genfromtxt('data/digitstrain.txt', delimiter=',')
@@ -274,12 +274,11 @@ def plot_problem_f_l2_reg():
     plt.legend()
     return fig
 
-def plot_problem_f_result():
-    model = NN_3_layer(hidden_dim=100)
+def plot_problem_f_or_g_result(model, epoch_num, learning_rt, momentum, alpha):
 
-    for i in range(180):
-        train_or_evaluate_epoch(model, train_data, Train = True,
-                             learning_rt = 0.01, momentum = .0, NLL = True, alpha=0.0001)
+    for i in range(epoch_num):
+        train_or_evaluate_epoch(model, train_data, True,
+                             learning_rt, momentum, True, alpha)
     
     fig = plot_visulizing_parameter(np.transpose(model.layer1.W[:-1,:]), 10)
     
@@ -290,7 +289,7 @@ def plot_problem_f_result():
     valid_loss_IC = train_or_evaluate_epoch(model, valid_data, Train = False, NLL = False)
     test_loss_IC= train_or_evaluate_epoch(model, test_data, Train = False, NLL = False)
     print 'train_loss_NLL', train_loss_NLL, 'valid_loss_NLL', valid_loss_NLL, 'test_loss_NLL', test_loss_NLL
-    print 'train_loss_IC', train_loss_IC, 'valid_loss_IC', valid_loss_IC, 'test_loss_IC', 
+    print 'train_loss_IC', train_loss_IC, 'valid_loss_IC', valid_loss_IC, 'test_loss_IC', test_loss_IC
 
     return fig
 
@@ -300,12 +299,21 @@ fig = plot_problem_f_l2_reg()
 fig.savefig('problem_f_find_l2.png')
 #train_loss_NLL 0.0302798907306 valid_loss_NLL 0.274775637271 test_loss_NLL 0.325125106534
 #train_loss_IC 0.0 valid_loss_IC 0.084 test_loss_IC 0.0923333333333
-fig = plot_problem_f_result()
+model = NN_3_layer()
+fig = plot_problem_f_or_g_result(model, 180, 0.01, 0, 0.001)
 fig.savefig('problem_f_visualization.png')
 '''
-fig = plot_problem_f_result()
-fig.savefig('problem_f_visualization.png')
 
+'''
+    Problem g
+'''
+'''
+model = NN_4_layer()
+#train_loss_NLL 0.324571271092 valid_loss_NLL 0.499887242168 test_loss_NLL 0.552144295303
+#train_loss_IC 0.101 valid_loss_IC 0.149 test_loss_IC 0.166666666667
+fig = plot_problem_f_or_g_result(model, 140, 0.01, 0, .0)
+fig.savefig('problem_g_visualization.png')
+'''
 
 
 

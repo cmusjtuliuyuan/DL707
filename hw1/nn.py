@@ -161,3 +161,66 @@ class NN_3_layer():
         loss = batch_size - np.sum(predict_one_hot*Labels)
 
         return loss
+
+class NN_4_layer():
+    def __init__(self):
+        self.layer1 = Linear(784, 100)
+        self.act1 = Sigmoid()
+        self.layer2 = Linear(100, 100)
+        self.act2 = Sigmoid()
+        self.layer3 = Linear(100, 10)
+        self.loss = Softmax_Cross_Entropy()
+
+    def get_NLL_loss(self, X, Labels):
+        '''
+        Augument:
+            X: [batch_size, input_dim] Float
+            Labels: [batch_size, input_dim] one-hot 
+        Return: 
+            loss: float
+        '''
+        o1 = self.layer1.forward(X)
+        h1 = self.act1.forward(o1)
+        o2 = self.layer2.forward(h1)
+        h2 = self.act2.forward(o2)
+        o3 = self.layer3.forward(h2)
+        loss = self.loss.get_loss(o3, Labels)
+        return loss
+
+    def backward(self, Labels, learning_rt, momentum = .0, alpha = .0):
+        '''
+        Augument:
+            learning_rt: float
+        '''
+        grad_out_loss = self.loss.backward(Labels)
+        grad_out_layer3 = self.layer3.backward(grad_out_loss)
+        self.layer3.update(learning_rt, momentum, alpha)
+        grad_out_act2 = self.act2.backward(grad_out_layer3)
+        grad_out_layer2 = self.layer2.backward(grad_out_act2)
+        self.layer2.update(learning_rt, momentum, alpha)
+        grad_out_act1 = self.act1.backward(grad_out_layer2)
+        grad_out_layer1 = self.layer2.backward(grad_out_act1)
+        self.layer1.update(learning_rt, momentum, alpha)
+        return grad_out_layer1
+
+    def get_IC_loss(self, X, Labels):
+        '''
+        Augument:
+            X: [batch_size, input_dim] Float
+            Labels: [batch_size, input_dim] one-hot 
+        Return:
+            loss: int
+        '''
+        batch_size, dim = Labels.shape
+        o1 = self.layer1.forward(X)
+        h1 = self.act1.forward(o1)
+        o2 = self.layer2.forward(h1)
+        h2 = self.act2.forward(o2)
+        o3 = self.layer3.forward(h2)
+        predict = np.argmax(self.loss.forward(o3), axis=1)
+        predict_one_hot = np.zeros((batch_size, dim))
+        predict_one_hot[np.arange(batch_size), predict] = 1
+
+        loss = batch_size - np.sum(predict_one_hot*Labels)
+
+        return loss
