@@ -281,6 +281,8 @@ def plot_problem_f_result():
         train_or_evaluate_epoch(model, train_data, Train = True,
                              learning_rt = 0.01, momentum = .0, NLL = True, alpha=0.0001)
     
+    fig = plot_visulizing_parameter(np.transpose(model.layer1.W[:-1,:]), 10)
+    
     train_loss_NLL = train_or_evaluate_epoch(model, train_data, Train = False, NLL = True)
     valid_loss_NLL = train_or_evaluate_epoch(model, valid_data, Train = False, NLL = True)
     test_loss_NLL= train_or_evaluate_epoch(model, test_data, Train = False, NLL = True)
@@ -288,15 +290,21 @@ def plot_problem_f_result():
     valid_loss_IC = train_or_evaluate_epoch(model, valid_data, Train = False, NLL = False)
     test_loss_IC= train_or_evaluate_epoch(model, test_data, Train = False, NLL = False)
     print 'train_loss_NLL', train_loss_NLL, 'valid_loss_NLL', valid_loss_NLL, 'test_loss_NLL', test_loss_NLL
-    print 'train_loss_IC', train_loss_IC, 'valid_loss_IC', valid_loss_IC, 'test_loss_IC', test_loss_IC
+    print 'train_loss_IC', train_loss_IC, 'valid_loss_IC', valid_loss_IC, 'test_loss_IC', 
+
+    return fig
 
 '''
+# Problem f
 fig = plot_problem_f_l2_reg()
 fig.savefig('problem_f_find_l2.png')
 #train_loss_NLL 0.0302798907306 valid_loss_NLL 0.274775637271 test_loss_NLL 0.325125106534
 #train_loss_IC 0.0 valid_loss_IC 0.084 test_loss_IC 0.0923333333333
-plot_problem_f_result()
+fig = plot_problem_f_result()
+fig.savefig('problem_f_visualization.png')
 '''
+fig = plot_problem_f_result()
+fig.savefig('problem_f_visualization.png')
 
 
 
