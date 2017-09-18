@@ -42,10 +42,10 @@ class Linear():
         grad_out = grad_in.dot(self.W.T)
         return grad_out[:, : -1]
 
-    def update(self, learning_rt, momentum = .0):
+    def update(self, learning_rt, momentum = .0, alpha = .0):
         self.grad_W += momentum * self.grad_W_pre
         self.grad_W_pre = self.grad_W
-        self.W = self.W - learning_rt*self.grad_W
+        self.W = self.W - learning_rt*self.grad_W - alpha * self.W
 
 class Softmax_Cross_Entropy():
 
@@ -129,17 +129,17 @@ class NN_3_layer():
         loss = self.loss.get_loss(o2, Labels)
         return loss
 
-    def backward(self, Labels, learning_rt, momentum = .0):
+    def backward(self, Labels, learning_rt, momentum = .0, alpha = .0):
         '''
         Augument:
             learning_rt: float
         '''
         grad_out_loss = self.loss.backward(Labels)
         grad_out_layer2 = self.layer2.backward(grad_out_loss)
-        self.layer2.update(learning_rt, momentum)
+        self.layer2.update(learning_rt, momentum, alpha)
         grad_out_act = self.act.backward(grad_out_layer2)
         grad_out_layer1 = self.layer1.backward(grad_out_act)
-        self.layer1.update(learning_rt, momentum)
+        self.layer1.update(learning_rt, momentum, alpha)
         return grad_out_layer1
 
     def get_IC_loss(self, X, Labels):

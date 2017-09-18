@@ -6,15 +6,17 @@ from nn import NN_3_layer
 BATCH_SIZE = 32
 train_data = np.genfromtxt('data/digitstrain.txt', delimiter=',')
 valid_data = np.genfromtxt('data/digitsvalid.txt', delimiter=',')
+test_data = np.genfromtxt('data/digitstest.txt', delimiter=',')
+
 
 def train_or_evaluate_epoch(model, data, Train = True, 
-                        learning_rt = 0.1, momentum = .0, NLL = True):
+                        learning_rt = 0.1, momentum = .0, NLL = True, alpha = .0):
     # Train = True means the model will be trained, otherwise, only evaluate it
     # NLL = True means it will output the cross_entropy_loss, otherwise, it will output 
     #  incorrect classification ratio.
 
     def train_or_evaluate_batch(model, sentences, Train = True, 
-                        learning_rt = 0.1, momentum =.0, NLL = True):
+                        learning_rt = 0.1, momentum =.0, NLL = True, alpha = .0):
         batch_size = len(sentences)
         batch_data = np.array(sentences)
         X = batch_data[:,:-1]
@@ -27,7 +29,7 @@ def train_or_evaluate_epoch(model, data, Train = True,
             loss = model.get_IC_loss(X, Labels)
 
         if Train:
-            model.backward(Labels, learning_rt, momentum)
+            model.backward(Labels, learning_rt, momentum, alpha)
 
         return loss        
 
@@ -39,14 +41,14 @@ def train_or_evaluate_epoch(model, data, Train = True,
         sentences.append(data[index])
         if len(sentences) == BATCH_SIZE:
             # Train the model
-            loss = train_or_evaluate_batch(model, sentences, Train, learning_rt, momentum, NLL)
+            loss = train_or_evaluate_batch(model, sentences, Train, learning_rt, momentum, NLL, alpha)
             #print loss
             sum_loss += loss
             # Clear old batch
             sentences = []
 
     if len(sentences) != 0:
-        loss = train_or_evaluate_batch(model, sentences, Train, learning_rt, momentum, NLL)
+        loss = train_or_evaluate_batch(model, sentences, Train, learning_rt, momentum, NLL, alpha)
         sum_loss += loss
     average_loss = sum_loss * 1.0 / len(data) 
     return average_loss
@@ -54,7 +56,7 @@ def train_or_evaluate_epoch(model, data, Train = True,
 '''
     Problem a and b:
 '''
-def get_loss_one_time(learning_rt = 0.1, momentum = .0, NLL=True, hidden_dim = 100):
+def get_loss_one_time(learning_rt = 0.1, momentum = .0, NLL=True, hidden_dim = 100, alpha = .0):
     model = NN_3_layer(hidden_dim)
     Train_loss = []
     Valid_loss = []
@@ -74,7 +76,7 @@ def get_loss_one_time(learning_rt = 0.1, momentum = .0, NLL=True, hidden_dim = 1
         Second Train:
         '''
         train_or_evaluate_epoch(model, train_data, Train = True,
-                             learning_rt = learning_rt, momentum = momentum, NLL = NLL)
+                             learning_rt = learning_rt, momentum = momentum, NLL = NLL, alpha = alpha)
 
     return Train_loss, Valid_loss, model
 
@@ -248,6 +250,53 @@ fig = plot_problem_e()
 fig.savefig('problem_e.png')
 '''
 
+# Problem f
+def plot_problem_f_l2_reg():
+
+    _, Valid_loss_0 , _ = get_loss_one_time(learning_rt = 0.01, alpha = 0.)
+    _, Valid_loss_5 , _ = get_loss_one_time(learning_rt = 0.01, alpha = 0.0001)
+    _, Valid_loss_10 , _ = get_loss_one_time(learning_rt = 0.01, alpha = 0.0005)
+    _, Valid_loss_15 , _ = get_loss_one_time(learning_rt = 0.01, alpha = 0.001)
+
+    fig = plt.figure()
+    plt.plot(Valid_loss_0,"g-",label="weight decay = 0")
+    plt.plot(Valid_loss_5,"r-",label="weight decay = 0.0001")
+    plt.plot(Valid_loss_10,"m-",label="weight decay = 0.0005")
+    plt.plot(Valid_loss_15,"k-",label="weight decay = 0.001")
+
+    plt.xlabel("epoches")
+    plt.ylabel("error")
+    plt.title('cross_entropy_loss')
+
+    plt.ylim(0,1)
+
+    plt.grid(True)
+    plt.legend()
+    return fig
+
+def plot_problem_f_result():
+    model = NN_3_layer(hidden_dim=100)
+
+    for i in range(180):
+        train_or_evaluate_epoch(model, train_data, Train = True,
+                             learning_rt = 0.01, momentum = .0, NLL = True, alpha=0.0001)
+    
+    train_loss_NLL = train_or_evaluate_epoch(model, train_data, Train = False, NLL = True)
+    valid_loss_NLL = train_or_evaluate_epoch(model, valid_data, Train = False, NLL = True)
+    test_loss_NLL= train_or_evaluate_epoch(model, test_data, Train = False, NLL = True)
+    train_loss_IC = train_or_evaluate_epoch(model, train_data, Train = False, NLL = False)
+    valid_loss_IC = train_or_evaluate_epoch(model, valid_data, Train = False, NLL = False)
+    test_loss_IC= train_or_evaluate_epoch(model, test_data, Train = False, NLL = False)
+    print 'train_loss_NLL', train_loss_NLL, 'valid_loss_NLL', valid_loss_NLL, 'test_loss_NLL', test_loss_NLL
+    print 'train_loss_IC', train_loss_IC, 'valid_loss_IC', valid_loss_IC, 'test_loss_IC', test_loss_IC
+
+'''
+fig = plot_problem_f_l2_reg()
+fig.savefig('problem_f_find_l2.png')
+#train_loss_NLL 0.0302798907306 valid_loss_NLL 0.274775637271 test_loss_NLL 0.325125106534
+#train_loss_IC 0.0 valid_loss_IC 0.084 test_loss_IC 0.0923333333333
+plot_problem_f_result()
+'''
 
 
 
