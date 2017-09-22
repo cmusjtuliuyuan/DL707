@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-from nn import NN_3_layer, NN_4_layer
+from nn import NN_3_layer, NN_4_layer, NN_4_BN_layer
 
 BATCH_SIZE = 32
 train_data = np.genfromtxt('data/digitstrain.txt', delimiter=',')
@@ -274,7 +274,7 @@ def plot_problem_f_l2_reg():
     plt.legend()
     return fig
 
-def plot_problem_f_or_g_result(model, epoch_num, learning_rt, momentum, alpha):
+def plot_problem_fgh_result(model, epoch_num, learning_rt, momentum, alpha):
 
     for i in range(epoch_num):
         train_or_evaluate_epoch(model, train_data, True,
@@ -300,7 +300,7 @@ fig.savefig('problem_f_find_l2.png')
 #train_loss_NLL 0.0302798907306 valid_loss_NLL 0.274775637271 test_loss_NLL 0.325125106534
 #train_loss_IC 0.0 valid_loss_IC 0.084 test_loss_IC 0.0923333333333
 model = NN_3_layer()
-fig = plot_problem_f_or_g_result(model, 180, 0.01, 0, 0.001)
+fig = plot_problem_fgh_result(model, 180, 0.01, 0, 0.001)
 fig.savefig('problem_f_visualization.png')
 '''
 
@@ -311,9 +311,37 @@ fig.savefig('problem_f_visualization.png')
 model = NN_4_layer()
 #train_loss_NLL 0.324571271092 valid_loss_NLL 0.499887242168 test_loss_NLL 0.552144295303
 #train_loss_IC 0.101 valid_loss_IC 0.149 test_loss_IC 0.166666666667
-fig = plot_problem_f_or_g_result(model, 140, 0.01, 0, .0)
+fig = plot_problem_fgh_result(model, 140, 0.01, 0, .0)
 fig.savefig('problem_g_visualization.png')
 '''
+
+'''
+    Problem h
+'''
+'''
+model = NN_4_BN_layer()
+#Epoch num: 7
+#train_loss_NLL 0.115590739458 valid_loss_NLL 0.359999605125 test_loss_NLL 0.528242543282
+#train_loss_IC 0.036 valid_loss_IC 0.118 test_loss_IC 0.138
+for i in range(30):
+
+    print 'Epoch num:', i
+    # Train the model
+    train_or_evaluate_epoch(model, train_data, Train = True,
+                         learning_rt = 0.1, momentum = 0, NLL = True, alpha = 0)
+
+    train_loss_NLL = train_or_evaluate_epoch(model, train_data, Train = False, NLL = True)
+    valid_loss_NLL = train_or_evaluate_epoch(model, valid_data, Train = False, NLL = True)
+    test_loss_NLL= train_or_evaluate_epoch(model, test_data, Train = False, NLL = True)
+    train_loss_IC = train_or_evaluate_epoch(model, train_data, Train = False, NLL = False)
+    valid_loss_IC = train_or_evaluate_epoch(model, valid_data, Train = False, NLL = False)
+    test_loss_IC= train_or_evaluate_epoch(model, test_data, Train = False, NLL = False)
+    print 'train_loss_NLL', train_loss_NLL, 'valid_loss_NLL', valid_loss_NLL, 'test_loss_NLL', test_loss_NLL
+    print 'train_loss_IC', train_loss_IC, 'valid_loss_IC', valid_loss_IC, 'test_loss_IC', test_loss_IC
+'''
+
+
+
 
 
 
