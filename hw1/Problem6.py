@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from nn import NN_3_layer, NN_4_layer, NN_4_BN_layer
+from nn import Sigmoid, ReLU, Tanh
 
 BATCH_SIZE = 32
 train_data = np.genfromtxt('data/digitstrain.txt', delimiter=',')
@@ -56,7 +57,7 @@ def train_or_evaluate_epoch(model, data, Train = True,
 '''
     Problem a and b:
 '''
-def get_loss_one_time(learning_rt = 0.1, momentum = .0, NLL=True, hidden_dim = 100, alpha = .0):
+def get_loss_one_time(learning_rt = 0.1, momentum = .0, NLL=True, hidden_dim = 100, alpha = .0, act_fun = Sigmoid):
     model = NN_3_layer(hidden_dim)
     Train_loss = []
     Valid_loss = []
@@ -274,7 +275,7 @@ def plot_problem_f_l2_reg():
     plt.legend()
     return fig
 
-def plot_problem_fgh_result(model, epoch_num, learning_rt, momentum, alpha):
+def plot_problem_f_or_g_result(model, epoch_num, learning_rt, momentum, alpha):
 
     for i in range(epoch_num):
         train_or_evaluate_epoch(model, train_data, True,
@@ -300,7 +301,7 @@ fig.savefig('problem_f_find_l2.png')
 #train_loss_NLL 0.0302798907306 valid_loss_NLL 0.274775637271 test_loss_NLL 0.325125106534
 #train_loss_IC 0.0 valid_loss_IC 0.084 test_loss_IC 0.0923333333333
 model = NN_3_layer()
-fig = plot_problem_fgh_result(model, 180, 0.01, 0, 0.001)
+fig = plot_problem_f_or_g_result(model, 180, 0.01, 0, 0.001)
 fig.savefig('problem_f_visualization.png')
 '''
 
@@ -311,7 +312,7 @@ fig.savefig('problem_f_visualization.png')
 model = NN_4_layer()
 #train_loss_NLL 0.324571271092 valid_loss_NLL 0.499887242168 test_loss_NLL 0.552144295303
 #train_loss_IC 0.101 valid_loss_IC 0.149 test_loss_IC 0.166666666667
-fig = plot_problem_fgh_result(model, 140, 0.01, 0, .0)
+fig = plot_problem_f_or_g_result(model, 140, 0.01, 0, .0)
 fig.savefig('problem_g_visualization.png')
 '''
 
@@ -341,7 +342,46 @@ for i in range(30):
 '''
 
 
+'''
+    Problem i
+'''
+def plot_problem_i():
+    Train_loss_Sigmoid, Valid_loss_Sigmoid , _ = get_loss_one_time(learning_rt = 0.01, momentum = .5, hidden_dim = 100, act_fun = Sigmoid)
+    Train_loss_ReLU, Valid_loss_ReLU , _ = get_loss_one_time(learning_rt = 0.01, momentum = .5, hidden_dim = 100, act_fun = ReLU)
+    Train_loss_Tanh, Valid_loss_Tanh , _ = get_loss_one_time(learning_rt = 0.01, momentum = .5, hidden_dim = 100, act_fun = Tanh)
 
+    fig = plt.figure()
+    p1 = plt.subplot(211)
+    p2 = plt.subplot(212)
 
+    p1.plot(Train_loss_Sigmoid,"g-",label="Sigmoid")
+    p1.plot(Train_loss_ReLU,"r-",label="ReLU")
+    p1.plot(Train_loss_Tanh,"m-",label="Tanh")
 
+    p1.set_xlabel("epoches")
+    p1.set_ylabel("error")
+    p1.set_title("Train: cross_entropy_loss")
 
+    p1.set_ylim(0,0.8)
+
+    p1.grid(True)
+    p1.legend()
+
+    p2.plot(Valid_loss_Sigmoid,"g-",label="Sigmoid")
+    p2.plot(Valid_loss_ReLU,"r-",label="ReLU")
+    p2.plot(Valid_loss_Tanh,"m-",label="Tanh")
+
+    p2.set_xlabel("epoches")
+    p2.set_ylabel("error")
+    p2.set_title("Valid: cross_entropy_loss")
+
+    p2.set_ylim(0.2,0.8)
+
+    p2.grid(True)
+    p2.legend()
+    return fig
+'''
+# Problem i
+fig = plot_problem_i()
+fig.savefig('problem_i.png')
+'''

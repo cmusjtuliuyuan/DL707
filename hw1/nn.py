@@ -170,10 +170,58 @@ class Sigmoid():
         grad_out = grad_in * self.output * (1-self.output)
         return grad_out
 
+class ReLU():
+    def __init__(self):
+        self.output = None
+
+    def forward(self, X):
+        '''
+        Augument:
+            X: [batch_size, input_dim] Float
+        Return:
+            Output: [batch_size, input_dim] Float
+        '''
+        self.output = (X > 0) * X
+        return self.output
+
+    def backward(self, grad_in):
+        '''
+        Augument:
+            grad_in: [batch_size, input_dim] Float
+        Return:
+            grad_out: [batch_size, input_dim] Float
+        '''
+        grad_out = (self.output > 0) * grad_in
+        print grad_out
+
+class Tanh():
+    def __init__(self):
+        self.output = None
+
+    def forward(self, X):
+        '''
+        Augument:
+            X: [batch_size, input_dim] Float
+        Return:
+            Output: [batch_size, input_dim] Float
+        '''
+        self.output = (np.exp(X)-np.exp(-X))/(np.exp(X)+exp(-X))
+        return self.output
+
+    def backward(self, grad_in):
+        '''
+        Augument:
+            grad_in: [batch_size, input_dim] Float
+        Return:
+            grad_out: [batch_size, input_dim] Float
+        '''
+        grad_out = 1 - self.output * self.output
+        print grad_out
+
 class NN_3_layer():
-    def __init__(self, hidden_dim = 100):
+    def __init__(self, hidden_dim = 100, act_fun = Sigmoid):
         self.layer1 = Linear(784, hidden_dim)
-        self.act = Sigmoid()
+        self.act = act_fun()
         self.layer2 = Linear(hidden_dim, 10)
         self.loss = Softmax_Cross_Entropy()
 
