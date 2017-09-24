@@ -11,6 +11,7 @@
 \renewcommand{\algorithmicensure}{\textbf{Output:}} 
 \usepackage{epsfig} 
 \usepackage{graphicx}
+\usepackage{subfigure}
 
 \setlength{\oddsidemargin}{0.25 in}
 \setlength{\evensidemargin}{-0.25 in}
@@ -22,7 +23,7 @@
 \setlength{\parskip}{0.1 in}
 
 \newcommand{\lecture}[3]{
-   \pagestyle{myheadings}
+   \pagestyle{myheadings} 
    \thispagestyle{plain}
    \newpage
    \setcounter{page}{1}
@@ -47,10 +48,10 @@
 \lecture{Homework 1}{Russ Salakhutdinov }{Yuan Liu(yuanl4)} % Lecture name, Lecturer, Scribes
 \section{Problem 1}
 \subsection{Error vs model complexity}
-\includegraphics[width=0.4\linewidth]{images/1_1}
+\includegraphics[width=0.5\linewidth]{images/1_1}
 
 \subsection{Error vs size of training dataset}
-\includegraphics[width=0.4\linewidth]{images/1_2}
+\includegraphics[width=0.5\linewidth]{images/1_2}
 
 \subsection{Early stopping}
 \paragraph{} Early stopping is a reasonable regularization metric. Machine learning algorithms train a model based on a finite set of training data with an iterative method. The goal of machine learning is to predict the unseen observations.  Up to a point, the iterative update methods improves the model's performance on unseen observations. Past that point, overfitting occurs.  Early stopping rules provide guidance as to how many iterations can be run before the learner begins to over-fit.
@@ -65,7 +66,7 @@ Then we can know:
 \begin{eqnarray}
 l_i(x^*; \mathcal{X})=
 \begin{cases}
-1, & i\in N_k(x^*)\cr
+\frac{1}{k}, & i\in N_k(x^*)\cr
  0, & otherwise 
  \end{cases}
 \end{eqnarray}
@@ -115,7 +116,7 @@ First represent two networks in the following form:
 \begin{itemize}
 \item Sigmoid network: Input $x=(x_1, \dots, x_p)^T$, First Layer: $a^{sig} = W^{sig}_{1}x + b^{sig}_1$, Activation function: $h^{sig} = \sigma (a^{sig})$, Second Layer: $o^{sig} = W^{sig}_2 h^{sig} + b^{sig}_2$
 
-\item Tanh network: Input $x=(x_1, \dots, x_p)^T$, First Layer: $a^{tanh} = W^{tanh}_{1}x + b^{tanh}_1$, Activation function: $h^{tanh} = tanh (a)$, Second Layer: $o^{tanh} = W^{tanh}_2 h^{tanh} + b^{tanh}_2$
+\item Tanh network: Input $x=(x_1, \dots, x_p)^T$, First Layer: $a^{tanh} = W^{tanh}_{1}x + b^{tanh}_1$, Activation function: $h^{tanh} = tanh (a^{tanh})$, Second Layer: $o^{tanh} = W^{tanh}_2 h^{tanh} + b^{tanh}_2$
 \end{itemize}
 
 By observation we can have:
@@ -123,7 +124,7 @@ $$\sigma(2a) = \frac{tanh(a)+1}{2}$$
 First, we can assume:
 $$W_1^{sig} = 2W_1^{tanh},\ \ \ b_1^{sig}=2b_1^{tanh}$$
 Then $$a^{sig} = W^{sig}_{1}x + b^{sig} = 2W_1^{tanh}x+2b_1^{tanh} = 2 a^{tanh}$$
-$$h^{sig}=\sigma(2 a^{tanh}) = \frac{h^{tanh}+1}{2}$$
+$$h^{sig}=\sigma(2 a^{tanh}) = \frac{tanh(a^{tanh})+1}{2}=\frac{h^{tanh}+1}{2}$$
 
 Second, we can assume:
 $$W_2^{sig} = 2W_2^{tanh},\ \ \ b_2^{sig}=b_2^{tanh}-W_2^{tanh} \cdot \mathbf{1}$$
@@ -133,26 +134,91 @@ $$W_1^{sig} = 2W_1^{tanh},\ \ \ b_1^{sig}=2b_1^{tanh}$$
 $$W_2^{sig} = 2W_2^{tanh},\ \ \ b_2^{sig}=b_2^{tanh}-W_2^{tanh} \cdot \mathbf{1}$$
 
 \section{Problem 6}
+\subsection{(a)}
+\includegraphics[width=0.5\linewidth]{images/problem_a}
+\paragraph{} When the training is going on, the training error will keep decreasing. The validation error will first decrease, then up to a point, begins to increase. \\
+The network's performance keeps becoming better and better on the training dataset. The network's performance on the validation dataset will first become better then becomes worse, because of over-fitting.
+
+
+\subsection{(b)}
+\includegraphics[width=0.5\linewidth]{images/problem_b}
+\paragraph{} The over-fitting is difficult to be observed by the classification error.
+
+
+\subsection{(c)}
+\includegraphics[width=0.5\linewidth]{images/problem_c}
+\paragraph{} For example the sub-image on row 10 column 9 looks like number 1, the sub-image on row 4 column 5 looks like number 3, the sub-image on row 9 column 7 looks like number 8. I think this model can learn some structured  features.
+
+\subsection{(d)}
+\begin{figure}[h]
+\centering
+\subfigure[Problem d: different learning rate]{
+\begin{minipage}[b]{0.4\textwidth}
+\includegraphics[width=1\textwidth]{images/problem_d_learning_rt_cross_entropy} \\
+\includegraphics[width=1\textwidth]{images/problem_d_learning_rt_IC}
+\end{minipage}
+}
+\subfigure[Problem d: different momentum]{
+\begin{minipage}[b]{0.4\textwidth}
+\includegraphics[width=1\textwidth]{images/problem_d_momentum_cross_entropy} \\
+\includegraphics[width=1\textwidth]{images/problem_d_momentum_IC}
+\end{minipage}
+
+}
+\end{figure}
+
+\paragraph{} For this case, decreasing the learning rate will improves the model's performance and the momentum makes the model's performance worse. So I will choose learning rate equals 0.01 and momentum equals 0
+
+\subsection{(e)}
+\includegraphics[width=0.5\linewidth]{images/problem_e}
+\paragraph{}
+$Hidden\ dimension = 100\ or\ 200$ is most suitable for this task. When the number of hidden units is too little or too much, the performance of network will become worse.
+
+\subsection{(f)}
+
+\begin{figure}[h]
+\centering
+\subfigure[Problem f: different L2 coefficients]{
+\begin{minipage}[b]{0.4\textwidth}
+\includegraphics[width=1\textwidth]{images/problem_f_find_l2} 
+\end{minipage}
+}
+\subfigure[Problem f: visualization]{
+\begin{minipage}[b]{0.4\textwidth}
+\includegraphics[width=1\textwidth]{images/problem_f_visualization} 
+\end{minipage}
+
+}
+\end{figure}
+
+\paragraph{}According to problem (d) and (e), we found $$learning\ rate = 0.01$$ $$momentum = 0$$ $$hidden\ dimension = 100$$ is the most suitable parameter for this task. Then I tried some L2 regularization coefficients and find out $$L2\ coefficient = 0.0001$$  $$epoch\ number = 180$$is the best choice.
+
+		$$train\_loss\_cross\_entropy =  0.03, valid\_loss\_cross\_entropy = 0.27,  test\_loss\_cross\_entropy = 0.33$$
+		$$train\_loss\_\%incorrect = 0.0, valid\_loss\_\%incorrect = 0.08, test\_loss\_\%incorrect = 0.09$$
+
+\subsection{(g)}
+\paragraph{} After cross validation, we find out the following parameters.
+$$learning\ rate = 0.01$$ $$momentum = 0$$
+$$L2\ coefficient = 0.01$$  $$epoch\ number = 140$$
+
+\includegraphics[width=0.5\linewidth]{images/problem_g_visualization}
+\paragraph{} I cannot find out any structure in the visualization of first layer. It's much worse than the ones that I obtained when training a single-layer network.
+\paragraph{} The 1-layer network outperform a 2-layer model in term of generalization capabilities.
+
+		$$train\_loss\_cross\_entropy =  0.32, valid\_loss\_cross\_entropy = 0.50,  test\_loss\_cross\_entropy = 0.55$$
+		$$train\_loss\_\%incorrect = 0.10, valid\_loss\_\%incorrect = 0.15, test\_loss\_\%incorrect = 0.17$$
+
+\subsection{(h)}
+\paragraph{}Batch normalization helps in terms of speed and accuracy. Before I use batch normalization, I need to set $learning\_rate = 0.01$ and train 140 epochs. After I use batch normalization, I can set $learning\_rate = 0.1$ and only train 7 epochs and get better result. 
+		$$train\_loss\_cross\_entropy =  0.12, valid\_loss\_cross\_entropy = 0.36,  test\_loss\_cross\_entropy = 0.53$$
+		$$train\_loss\_\%incorrect = 0.04, valid\_loss\_\%incorrect = 0.12, test\_loss\_\%incorrect = 0.14$$
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+\subsection{(i)}
+\includegraphics[width=0.5\linewidth]{images/problem_i}
+\paragraph{}
+I use three different activation function to train the model. The performances of Sigmoid and ReLu are almost the same, and Tanh performs slightly better than them.
 
 
 
