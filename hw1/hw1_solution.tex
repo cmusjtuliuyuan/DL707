@@ -5,11 +5,12 @@
 \usepackage{algorithmicx}  
 \usepackage{algpseudocode}  
 \usepackage{amsmath}  
+
   
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}  
 \renewcommand{\algorithmicensure}{\textbf{Output:}} 
-\usepackage{epsfig}
-\usepackage{graphicx} 
+\usepackage{epsfig} 
+\usepackage{graphicx}
 
 \setlength{\oddsidemargin}{0.25 in}
 \setlength{\evensidemargin}{-0.25 in}
@@ -44,6 +45,16 @@
 \begin{document}
 
 \lecture{Homework 1}{Russ Salakhutdinov }{Yuan Liu(yuanl4)} % Lecture name, Lecturer, Scribes
+\section{Problem 1}
+\subsection{Error vs model complexity}
+\includegraphics[width=0.4\linewidth]{images/1_1}
+
+\subsection{Error vs size of training dataset}
+\includegraphics[width=0.4\linewidth]{images/1_2}
+
+\subsection{Early stopping}
+\paragraph{} Early stopping is a reasonable regularization metric. Machine learning algorithms train a model based on a finite set of training data with an iterative method. The goal of machine learning is to predict the unseen observations.  Up to a point, the iterative update methods improves the model's performance on unseen observations. Past that point, overfitting occurs.  Early stopping rules provide guidance as to how many iterations can be run before the learner begins to over-fit.
+
 \section{Problem 2}
 \begin{itemize}
 \item K-nearest-neighbor regression:
@@ -120,6 +131,30 @@ Where $\mathbf{1}$ is a vector and all its component is 1.Then $$o^{sig} =  W^{s
 As a result, we can have the following equation:
 $$W_1^{sig} = 2W_1^{tanh},\ \ \ b_1^{sig}=2b_1^{tanh}$$
 $$W_2^{sig} = 2W_2^{tanh},\ \ \ b_2^{sig}=b_2^{tanh}-W_2^{tanh} \cdot \mathbf{1}$$
+
+\section{Problem 6}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 \end{document}
