@@ -47,17 +47,15 @@ def main():
 		fig = plot_problem_f_l2_reg()
 		fig.savefig('problem_f_find_l2.png')
 		model = NN_3_layer()
-		fig = plot_problem_f_or_g_result(model, 180, 0.01, 0, 0.001)
+		fig = plot_problem_f_or_g_result(model, 180, 0.01, 0, 0.0001)
 		fig.savefig('problem_f_visualization.png')
 
 	if opts.problem == 'g':
 		#train_loss_NLL 0.324571271092 valid_loss_NLL 0.499887242168 test_loss_NLL 0.552144295303
 		#train_loss_IC 0.101 valid_loss_IC 0.149 test_loss_IC 0.166666666667
-		fig = plot_problem_f_l2_reg()
-		fig.savefig('problem_f_find_l2.png')
-		model = NN_3_layer()
-		fig = plot_problem_f_or_g_result(model, 180, 0.01, 0, 0.001)
-		fig.savefig('problem_f_visualization.png')
+		model = NN_4_layer()
+		fig = plot_problem_f_or_g_result(model, 140, 0.01, 0, .0)
+		fig.savefig('problem_g_visualization.png')
 
 	if opts.problem == 'h':
 		model = NN_4_BN_layer()
