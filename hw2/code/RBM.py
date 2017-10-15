@@ -174,7 +174,7 @@ def problem_a_b(k=1):
     model = RBM(k=1)
     train_loss_array=[]
     valid_loss_array=[]
-    for i in range(30):
+    for i in range(50):
         # evaluate
         train_loss = train_or_evaluate_one_epoch(model, train_data, train = False)
         valid_loss = train_or_evaluate_one_epoch(model, valid_data, train = False)
@@ -202,18 +202,17 @@ def problem_a_b(k=1):
     fig.savefig('cross_entropy_loss_k=%d.png'%(k,))
 
 
-#problem_a_b(k=1)
-'''
+problem_a_b(k=1)
 problem_a_b(k=5)
 problem_a_b(k=10)
 problem_a_b(k=20)
-'''
+
 def problem_c():
     model = RBM(k=10)
-    for i in range(20):
+    for i in range(30):
         print 'Epoch number:', i
         train_or_evaluate_one_epoch(model, train_data, train = True, learning_rt=0.1)
-    for i in range(1):
+    for i in range(20):
         print 'Epoch number:', 20+i
         train_or_evaluate_one_epoch(model, train_data, train = True, learning_rt=0.01)
     _, generated_samples = model.get_Gibbs_sample(np.random.rand(100,784), 10000)
@@ -296,8 +295,8 @@ def get_loss_one_time(learning_rt = 0.1, momentum = .0, NLL=True, hidden_dim = 1
 
 def problem_d():
     train_loss_no_pretrain, valid_loss_no_pretrain, _ = get_loss_one_time(NLL=False)
-    model = RBM(k=1)
-    for i in range(20):
+    model = RBM(k=10)
+    for i in range(30):
         print 'Epoch number:', i
         train_or_evaluate_one_epoch(model, train_data, train = True, learning_rt=0.1)
     train_loss_pretrain, valid_loss_pretrain, _ = get_loss_one_time(NLL=False, W = model.W)
@@ -315,6 +314,6 @@ def problem_d():
     plt.legend()
     fig.savefig('problem_d.png')
 
-#problem_d()
+problem_d()
 
 
