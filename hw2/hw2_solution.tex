@@ -1,0 +1,143 @@
+\documentclass[twoside]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algorithm}  
+\usepackage{algorithmicx}  
+\usepackage{algpseudocode}  
+\usepackage{amsmath}
+\usepackage{bbm}  
+
+  
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}  
+\renewcommand{\algorithmicensure}{\textbf{Output:}} 
+\DeclareMathOperator*{\argmax}{arg\,max}
+\usepackage{epsfig} 
+\usepackage{graphicx}
+\usepackage{subfigure}
+
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\newcommand{\lecture}[3]{
+   \pagestyle{myheadings} 
+   \thispagestyle{plain}
+   \newpage
+   \setcounter{page}{1}
+   \noindent
+   \begin{center}
+   \framebox{
+      \vbox{\vspace{2mm}
+    \hbox to 6.28in { {\bf 10-707: Deep Learning, Fall 2017 \hfill} }
+       \vspace{6mm}
+       \hbox to 6.28in { {\Large \hfill #1  \hfill} }
+       \vspace{6mm}
+       \hbox to 6.28in { {\it Lecturer: #2 \hfill Name: #3} }
+      \vspace{2mm}}
+   }
+   \end{center}
+   \markboth{#1}{#1}
+   \vspace*{4mm}
+}
+
+\begin{document}
+
+\lecture{Homework 2}{Russ Salakhutdinov }{Yuan Liu(yuanl4)} % Lecture name, Lecturer, Scribes
+\section{Problem 1}
+\begin{itemize}
+\item The input image is a 2-D matrix $X$, the size is $d\times d$.
+\item Convolutional Layer: the parameter of feature map $i \in \{1,2\}$ is $W^{i}$. They are two 2-D matrixes, the size of each matrix is $k\times k$.\\
+
+The output of the convolutional layer is two 2-D matrixes $Y^{i},i \in \{1,2\}$, the size of each matrix is $\frac{d-k+1}{s}\times \frac{d-k+1}{s}$
+$$Y_{m,n}^i = \sum_{p=1}^k \sum_{q=1}^k X_{(m-1)s + p, (n-1)s+q} W_{p,q}^i$$
+Then we can get:
+$$\frac{\partial Y_{m,n}^i }{\partial W_{p,q}^i} = X_{(m-1)s + p, (n-1)s+q} $$
+
+The derivation input of the convolutional layer is two 2-D matrix $\frac{\partial Loss}{\partial Y^{i}},i \in \{1,2\}$, the size of each matrix is $\frac{d-k+1}{s}\times \frac{d-k+1}{s}$.
+Then we can get:
+$$\frac{\partial Loss}{\partial W_{p,q}^i} = \sum_{m,n=1}^{\frac{d-k+1}{s}}\frac{\partial Loss}{ \partial Y^i}_{m,n} \frac{\partial Y_{m,n}^i }{\partial W_{p,q}^i}
+=\sum_{m,n=1}^{\frac{d-k+1}{s}}\frac{\partial Loss}{ \partial Y^i}_{m,n} X_{(m-1)s + p, (n-1)s+q}$$
+
+\item Pooling Layer: The output of pooling layer is two 2-D matrixes $P^{i},i \in \{1,2\}$, the size of each matrix is $(\frac{d-k+1}{s}-p+1)\times (\frac{d-k+1}{s}-p+1)$.
+$$P^{k}_{m,n} = \max_{i,j \in \{1,...,p\}} Y^k_{m+i-1,n+j-1} $$
+The derivation input of the pooling layer is two 2-D matrix $\frac{\partial Loss}{\partial P^{i}},i \in \{1,2\}$, the size of each matrix is $(\frac{d-k+1}{s}-p+1)\times (\frac{d-k+1}{s}-p+1)$.
+Then we gan get the derivation output is:
+$$\frac{\partial Loss}{\partial Y^{k}}_{m,n} = \sum_{i,j=1}^p \frac{\partial Loss}{\partial P^k}_{m+i-1, n+j-1} \mathbbm{1}(i,j = \argmax_{i,j \in \{1,...,p\}} Y^k_{m+i-1,n+j-1})$$
+
+\item Flatten Layer, which convert the two 2-dimension matrixes into a vector. The length of this vector is $2(\frac{d-k+1}{s}-p+1)^2$.
+$$F_i = P^{k}_{m , n}$$
+$$k = \lceil \frac{i}{(\frac{d-k+1}{s}-p+1)^2} \rceil$$
+$$m=\lceil \frac{i-(\frac{d-k+1}{s}-p+1)^2(k-1)}{\frac{d-k+1}{s}-p+1}\rceil $$
+$$n = i-(\frac{d-k+1}{s}-p+1)^2(k-1) -(\lceil \frac{i-(\frac{d-k+1}{s}-p+1)^2(k-1)}{\frac{d-k+1}{s}-p+1}\rceil-1)(\frac{d-k+1}{s}-p+1)$$
+$$\frac{\partial Loss}{\partial P^{k}_{m , n}}=\frac{\partial Loss}{\partial F_{(k-1)*(\frac{d-k+1}{s}-p+1)^2+(m-1)*(\frac{d-k+1}{s}-p+1)+n}}$$
+
+\item Softmax Layer
+\end{itemize}
+
+
+
+
+
+
+
+\section{Problem 2}
+\paragraph{} Because the model is a directed graphical model, so it is a directed acyclic graph. 
+Then we can find an order $\{I_i\}_{i=1}^{K}$, that $pa_{I_i}\subset \{x_{I_j}\}_{j>i}$. 
+For simplicity, we can just assume that $\{x_i\}_{i=1}^{K}$ satisfies this order,
+which means $pa_{x_i}\subset \{x_{j}\}_{j>i}$.
+\begin{align*}
+\int p(x) dx= \int \prod_{k=1}^K p(x_k|pa_k)dx_1...dx_k = \int p(x_1|pa_1)dx_1 \int \prod_{k=2}^K p(x_k|pa_k)dx_2...dx_k
+\end{align*}
+We can do this calculation, because $x_1 \not\in \cap_{k=2}^K pa_k$. We also know $\int p(x_1|pa_1)dx_1=1$. Then we can know:
+$$\int p(x) dx= \int \prod_{k=1}^K p(x_k|pa_k)dx_1...dx_k=\int \prod_{k=2}^K p(x_k|pa_k)dx_2...dx_k$$
+By the same way, we can finally get 
+$$\int p(x) dx = \int p(x_K|pa_K) dx_K$$
+Because $x_K$ is the last one in the node list $x_1,...,x_K$, so $pa_K = \emptyset$, $\int p(x_K|pa_K) dx_K = \int p(x_k)dx_K = 1$.\\
+Finally we get:
+$$\int p(x)dx = 1$$
+
+\section{Problem 3}
+$$p_\theta(v,h) = \frac{1}{Z}exp(v^TWh + v^Tb + h^T a)$$
+\begin{align*}
+p_\theta(h|v)&=\frac{p(v,h)}{p(h)} =\frac{\frac{1}{Z}exp(v^TWh + v^Tb + h^T a)}{\sum_h \frac{1}{Z}exp(v^TWh + v^Tb + h^T a) }\\
+&=\frac{\exp(v^TWh + h^Ta)}{\sum_h exp(v^TWh + h^Ta) }\\
+&=\frac{\prod_{i=1}^Pexp(h_i(W^Tv +a)_{i})}{\sum_{h_1} exp(h_1(W^Tv +a)_{1}) \times \sum_{h_2} exp(h_2(W^Tv +a)_{2})\times...\times\sum_{h_P} exp(h_P(W^Tv +a)_{P})}\\
+&=\prod_{i=1}^P \frac{exp(h_i(W^Tv +a)_{i})}{\sum_{h_i\in\{0,1\} }exp(h_i(W^Tv +a)_{i})}\\
+&=\prod_{j=1}^P \sigma (h_i(W^Tv +a)_{i})
+\end{align*}
+
+\begin{align*}
+p_\theta(h_j=1|v) &= \sum_{h_j = 1, h_{i\neq j} \in \{0,1\} }p_\theta (h|v ) = \sum_{h_j = 1, h_{i\neq j} \in \{0,1\} }\prod_{j=1}^P \sigma (h_i(W^Tv +a)_{i})\\
+&=\sigma((W^Tv +a)_{j})\sum_{h_{i\neq j} \in \{0,1\} }\prod_{j\in\{1,..,P\}-\{j\}}\sigma (h_i(W^Tv +a)_{i})\\
+&=\sigma((W^Tv +a)_{j})\prod_{j\in\{1,..,P\}-\{j\}}\sum_{h_{i\neq j} \in \{0,1\} }\sigma (h_i(W^Tv +a)_{i})\\
+&=\sigma((W^Tv +a)_{j})
+\end{align*}
+By this formula we can know $p_\theta(h_j|v) = \sigma(h_j(W^Tv+1)_j)$.
+Thus $$p_\theta(v,h) = \prod_{j=1}^P p_\theta(h_j|v)$$
+
+
+\section{Problem 4}
+\subsection{}
+\begin{align*}
+E(x_m=1, x_{i \neq m}, y) =  h\sum_{i\neq m}x_i + h -\beta \sum_{i\neq m, j\neq m}x_i x_j - \beta \sum_{i\in local(m)}x_i- \eta \sum_{i\neq m}x_iy_i - \eta y_m\\
+E(x_m=-1, x_{i \neq m}, y) =  h\sum_{i\neq m}x_i - h -\beta \sum_{i\neq m, j\neq m}x_i x_j + \beta \sum_{i\in local(m)}x_i- \eta \sum_{i\neq m}x_iy_i + \eta y_m
+\end{align*}
+Then we can get:
+$$E(x_m=1, x_{i \neq m}, y)  - E(x_m=-1, x_{i \neq m}, y) = 2h - 2\beta \sum_{i\in local(m)}x_i - 2\eta y_m$$
+So the difference in the value of energy depends only on quantities that are local to $x_m$ in the graph.
+
+\subsection{}
+If $\beta = h = 0 $, we can get: $E(x,y) = - \eta \sum_i x_i y_i$. If we want to minimize the energy, we need to maximize $\sum_i x_iy_i$.
+Because $x_i \in \{-1, +1\}, y_i \in\{-1, +1\}$, so the maximum of $x_iy_i$ is 1, which can be got by $x_i = y_i$. 
+So the most probable configuration of the latent variables is given by $x_i = y_i$ for all i.
+
+
+
+\end{document}
+
+\grid
