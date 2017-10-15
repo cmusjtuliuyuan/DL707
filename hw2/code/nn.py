@@ -267,12 +267,9 @@ class Autoencoder():
         h2 = self.act2.forward(o2)
         return h2
 
-    def backward(self, X, learning_rt, learning_rt, momentum = .0, alpha = .0):
+    def backward(self, X, learning_rt, momentum = .0, alpha = .0):
+        pass
         
-
-
-
-
 
 
 class NN_3_layer():
