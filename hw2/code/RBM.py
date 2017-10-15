@@ -8,10 +8,6 @@ BATCH_SIZE = 32
 train_data = np.genfromtxt('data/digitstrain.txt', delimiter=',')
 valid_data = np.genfromtxt('data/digitsvalid.txt', delimiter=',')
 
-def get_bernoulli_sample(p):
-    h = np.random.rand(*p.shape)
-    return (h<p).astype(float)
-
 def sigm(x):
     return 1/(1+np.exp(-x))
 
@@ -37,8 +33,8 @@ class RBM():
         # b : [hidden_dim]
         self.W = (2*np.random.rand(hidden_dim, visible_dim)-1)\
                  *math.sqrt(6)/math.sqrt(visible_dim+hidden_dim)
-        self.c = np.zeros(visible_dim)
-        self.b = np.zeros(hidden_dim)
+        self.c = np.random.rand(visible_dim)*0.01
+        self.b = np.random.rand(hidden_dim)*0.01
         self.k = k
 
     def _get_P_h_given_x(self, x):
@@ -49,7 +45,7 @@ class RBM():
             h(x) := p(h=1|x)
                 [batch_size, hidden_dim]
         '''
-        b_plus_Wx = np.expand_dims(self.b, axis=0) + self.W.dot(x.T).T
+        b_plus_Wx = np.expand_dims(self.b, axis=0) + x.dot(self.W.T)
         return sigm(b_plus_Wx)
 
     def _get_P_x_given_h(self, h):
@@ -71,8 +67,7 @@ class RBM():
             result := h(x)x^T = p(h=1|x)x^T
                 [batch_size, hidden_dim, visible_dim]
         '''
-        result = [ np.outer(h_x_sample, x_sample)#[np.expand_dims(h_x_sample, axis=1).dot(np.expand_dims(x_sample, axis=0))\
-            for h_x_sample, x_sample in zip(h_x, x)]
+        result = [ np.outer(h_x_sample, x_sample) for h_x_sample, x_sample in zip(h_x, x)]
         return np.asarray(result)
 
     def get_Gibbs_sample(self, x, k):
@@ -83,19 +78,19 @@ class RBM():
             x_tilda: [batch_size, visible_dim]
         '''        
         p_h_x = self._get_P_h_given_x(x)
-        h_tilda = np.random.binomial(n=1, p=p_h_x) #get_bernoulli_sample(p_h_x)
+        h_tilda = np.random.binomial(n=1, p=p_h_x) 
 
         for i in range(k-1):
             # sample x_tilda
             p_x_h = self._get_P_x_given_h(h_tilda)
-            x_tilda = np.random.binomial(n=1, p=p_x_h) #get_bernoulli_sample(p_x_h)
+            x_tilda = np.random.binomial(n=1, p=p_x_h) 
             # sample h_tilda
             p_h_x = self._get_P_h_given_x(x_tilda)
-            h_tilda = np.random.binomial(n=1, p=p_h_x) #get_bernoulli_sample(p_h_x)
+            h_tilda = np.random.binomial(n=1, p=p_h_x) 
 
         # sample x_tilda
         p_x_h = self._get_P_x_given_h(h_tilda)
-        x_tilda = np.random.binomial(n=1, p=p_x_h) #get_bernoulli_sample(p_x_h)
+        x_tilda = np.random.binomial(n=1, p=p_x_h) 
         return x_tilda, p_x_h
 
     def _get_grad(self, x, x_tilda):
@@ -138,7 +133,7 @@ class RBM():
             cross entropy loss
         '''
         p_h_x = self._get_P_h_given_x(x)
-        h_tilda = get_bernoulli_sample(p_h_x)
+        h_tilda = np.random.binomial(n=1, p=p_x_h)
         p_x_h = self._get_P_x_given_h(h_tilda)
         loss = -x*np.log(p_x_h) - (1-x)*np.log(1-p_x_h)
         loss = np.sum(loss)
@@ -207,7 +202,7 @@ def problem_a_b(k=1):
     fig.savefig('cross_entropy_loss_k=%d.png'%(k,))
 
 
-problem_a_b(k=1)
+#problem_a_b(k=1)
 '''
 problem_a_b(k=5)
 problem_a_b(k=10)
@@ -218,14 +213,14 @@ def problem_c():
     for i in range(20):
         print 'Epoch number:', i
         train_or_evaluate_one_epoch(model, train_data, train = True, learning_rt=0.1)
-    for i in range(20):
+    for i in range(1):
         print 'Epoch number:', 20+i
         train_or_evaluate_one_epoch(model, train_data, train = True, learning_rt=0.01)
     _, generated_samples = model.get_Gibbs_sample(np.random.rand(100,784), 10000)
     fig = plot_10X10_figure(generated_samples)
     fig.savefig('generated_samples.png')
 
-#problem_c()
+problem_c()
 
 '''
 Problem d:
