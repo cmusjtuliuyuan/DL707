@@ -174,7 +174,7 @@ def problem_a_b(k=1):
     model = RBM(k=1)
     train_loss_array=[]
     valid_loss_array=[]
-    for i in range(50):
+    for i in range(40):
         # evaluate
         train_loss = train_or_evaluate_one_epoch(model, train_data, train = False)
         valid_loss = train_or_evaluate_one_epoch(model, valid_data, train = False)
@@ -208,8 +208,8 @@ problem_a_b(k=10)
 problem_a_b(k=20)
 '''
 def problem_c():
-    model = RBM(k=10)
-    for i in range(30):
+    model = RBM(k=20)
+    for i in range(20):
         print 'Epoch number:', i
         train_or_evaluate_one_epoch(model, train_data, train = True, learning_rt=0.1)
     for i in range(20):
@@ -268,10 +268,12 @@ def train_or_evaluate_epoch(model, data, Train = True,
     average_loss = sum_loss * 1.0 / len(data) 
     return average_loss
 
-def get_loss_one_time(learning_rt = 0.1, momentum = .0, NLL=True, hidden_dim = 100, alpha = .0, act_fun = Sigmoid, W=None):
+def get_loss_one_time(learning_rt = 0.1, momentum = .0, NLL=True,
+            hidden_dim = 100, alpha = .0, act_fun = Sigmoid,
+            W=(2*np.random.rand(100, 784)-1)\
+                *math.sqrt(6)/math.sqrt(100+784)):
     model = NN_3_layer(hidden_dim)
-    if W != None:
-        model.layer1.W[:-1,:]=W.T
+    model.layer1.W[:-1,:]=W.T
     Train_loss = []
     Valid_loss = []
 
@@ -296,7 +298,7 @@ def get_loss_one_time(learning_rt = 0.1, momentum = .0, NLL=True, hidden_dim = 1
 def problem_d():
     train_loss_no_pretrain, valid_loss_no_pretrain, _ = get_loss_one_time(NLL=False)
     model = RBM(k=10)
-    for i in range(30):
+    for i in range(50):
         print 'Epoch number:', i
         train_or_evaluate_one_epoch(model, train_data, train = True, learning_rt=0.1)
     train_loss_pretrain, valid_loss_pretrain, _ = get_loss_one_time(NLL=False, W = model.W)

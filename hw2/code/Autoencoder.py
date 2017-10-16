@@ -76,7 +76,7 @@ def train_one_epoch(model, data, learning_rt=0.01, train = True):
 def problem_e_f(Denoise = False):
     train_loss_no_pretrain, valid_loss_no_pretrain, _ = get_loss_one_time(NLL=False)
     model = Autoencoder(hidden_dim = 100, Denoise = Denoise)
-    for i in range(20):
+    for i in range(50):
         print 'Epoch number:', i
         train_one_epoch(model, train_data, 0.1)
     for i in range(10):
@@ -111,7 +111,7 @@ def problem_g(hidden_dim):
     Train_loss_array = []
     Valid_loss_array = []
     model = Autoencoder(hidden_dim = hidden_dim)
-    for i in range(100):
+    for i in range(500):
         print 'Epoch number:', i
         Train_loss_array.append(train_one_epoch(model, train_data, train=False))
         Valid_loss_array.append(train_one_epoch(model, valid_data, train=False))
