@@ -133,7 +133,7 @@ class RBM():
             cross entropy loss
         '''
         p_h_x = self._get_P_h_given_x(x)
-        h_tilda = np.random.binomial(n=1, p=p_x_h)
+        h_tilda = np.random.binomial(n=1, p=p_h_x)
         p_x_h = self._get_P_x_given_h(h_tilda)
         loss = -x*np.log(p_x_h) - (1-x)*np.log(1-p_x_h)
         loss = np.sum(loss)
@@ -199,14 +199,14 @@ def problem_a_b(k=1):
 
     plt.grid(True)
     plt.legend()
-    fig.savefig('cross_entropy_loss_k=%d.png'%(k,))
+    fig.savefig('cross_entropy_loss_k=%d_loss=%f.png'%(k,min(valid_loss_array)))
 
-
+'''
 problem_a_b(k=1)
 problem_a_b(k=5)
 problem_a_b(k=10)
 problem_a_b(k=20)
-
+'''
 def problem_c():
     model = RBM(k=10)
     for i in range(30):
@@ -219,7 +219,7 @@ def problem_c():
     fig = plot_10X10_figure(generated_samples)
     fig.savefig('generated_samples.png')
 
-problem_c()
+#problem_c()
 
 '''
 Problem d:
@@ -312,8 +312,8 @@ def problem_d():
 
     plt.grid(True)
     plt.legend()
-    fig.savefig('problem_d.png')
+    fig.savefig('problem_d_IC_%f.png'%(min(valid_loss_pretrain),))
 
-problem_d()
+#problem_d()
 
 
