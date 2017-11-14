@@ -1,0 +1,7 @@
+*.model
+*.log
+*.aux
+*.gz
+*.pyc
+*/.DS_Store
+.DS_Store

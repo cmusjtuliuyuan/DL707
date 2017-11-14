@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.5.8)  14 OCT 2017 16:02
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.5.8)  23 OCT 2017 11:54
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -193,7 +193,7 @@ Package: subfigure 2002/03/15 v2.1.5 subfigure package
 \subfig@top=\skip53
 \subfig@bottom=\skip54
 )
-No file hw2_solution.aux.
+(./hw2_solution.aux)
 \openout1 = `hw2_solution.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 48.
@@ -208,6 +208,7 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 48.
 LaTeX Font Info:    ... okay on input line 48.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 48.
 LaTeX Font Info:    ... okay on input line 48.
+
 (/usr/local/texlive/2016/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count113
@@ -268,66 +269,228 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 53.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 54.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 53.
-LaTeX Font Info:    Try loading font information for U+msa on input line 53.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 54.
+LaTeX Font Info:    Try loading font information for U+msa on input line 54.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 53.
+LaTeX Font Info:    Try loading font information for U+msb on input line 54.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-Underfull \hbox (badness 10000) in paragraph at lines 54--55
+Underfull \hbox (badness 10000) in paragraph at lines 55--56
 
  []
 
-LaTeX Font Info:    Try loading font information for U+bbm on input line 70.
+LaTeX Font Info:    Try loading font information for U+bbm on input line 71.
 (/usr/local/texlive/2016/texmf-dist/tex/latex/bbm-macros/ubbm.fd
 File: ubbm.fd 1999/03/15 V 1.2 Font definition for bbm font - TH
 ) [1
 
-{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Underfull \vbox (badness 1968) has occurred while \output is active []
+{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
 
- [2]
-[3] [4] (./hw2_solution.aux) ) 
+<code/cross_entropy_loss_k=1.png, id=28, 462.528pt x 346.896pt>
+File: code/cross_entropy_loss_k=1.png Graphic file (type png)
+
+<use code/cross_entropy_loss_k=1.png>
+Package pdftex.def Info: code/cross_entropy_loss_k=1.png used on input line 166
+.
+(pdftex.def)             Requested size: 187.89912pt x 140.92615pt.
+
+<code/k=1_W_visulization.png, id=30, 722.7pt x 722.7pt>
+File: code/k=1_W_visulization.png Graphic file (type png)
+
+<use code/k=1_W_visulization.png>
+Package pdftex.def Info: code/k=1_W_visulization.png used on input line 171.
+(pdftex.def)             Requested size: 187.89912pt x 187.89757pt.
+ [4 <./code/cross_entropy_loss_k=1.png> <./code/k=1_W_visulization.png>]
+<code/cross_entropy_loss_k=5.png, id=37, 462.528pt x 346.896pt>
+File: code/cross_entropy_loss_k=5.png Graphic file (type png)
+
+<use code/cross_entropy_loss_k=5.png>
+Package pdftex.def Info: code/cross_entropy_loss_k=5.png used on input line 186
+.
+(pdftex.def)             Requested size: 187.89912pt x 140.92615pt.
+
+<code/k=5_W_visulization.png, id=38, 722.7pt x 722.7pt>
+File: code/k=5_W_visulization.png Graphic file (type png)
+
+<use code/k=5_W_visulization.png>
+Package pdftex.def Info: code/k=5_W_visulization.png used on input line 191.
+(pdftex.def)             Requested size: 187.89912pt x 187.89757pt.
+
+<code/cross_entropy_loss_k=10.png, id=39, 462.528pt x 346.896pt>
+File: code/cross_entropy_loss_k=10.png Graphic file (type png)
+
+<use code/cross_entropy_loss_k=10.png>
+Package pdftex.def Info: code/cross_entropy_loss_k=10.png used on input line 20
+1.
+(pdftex.def)             Requested size: 187.89912pt x 140.92615pt.
+
+<code/k=10_W_visulization.png, id=40, 722.7pt x 722.7pt>
+File: code/k=10_W_visulization.png Graphic file (type png)
+
+<use code/k=10_W_visulization.png>
+Package pdftex.def Info: code/k=10_W_visulization.png used on input line 206.
+(pdftex.def)             Requested size: 187.89912pt x 187.89757pt.
+
+<code/cross_entropy_loss_k=20.png, id=41, 462.528pt x 346.896pt>
+File: code/cross_entropy_loss_k=20.png Graphic file (type png)
+
+<use code/cross_entropy_loss_k=20.png>
+Package pdftex.def Info: code/cross_entropy_loss_k=20.png used on input line 21
+6.
+(pdftex.def)             Requested size: 187.89912pt x 140.92615pt.
+
+<code/k=20_W_visulization.png, id=42, 722.7pt x 722.7pt>
+File: code/k=20_W_visulization.png Graphic file (type png)
+
+<use code/k=20_W_visulization.png>
+Package pdftex.def Info: code/k=20_W_visulization.png used on input line 221.
+(pdftex.def)             Requested size: 187.89912pt x 187.89757pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<code/generated_samples.png, id=43, 722.7pt x 722.7pt>
+File: code/generated_samples.png Graphic file (type png)
+
+<use code/generated_samples.png>
+Package pdftex.def Info: code/generated_samples.png used on input line 233.
+(pdftex.def)             Requested size: 187.89912pt x 187.89757pt.
+
+<code/generated_samples_k=20.png, id=44, 722.7pt x 722.7pt>
+File: code/generated_samples_k=20.png Graphic file (type png)
+
+<use code/generated_samples_k=20.png>
+Package pdftex.def Info: code/generated_samples_k=20.png used on input line 238
+.
+(pdftex.def)             Requested size: 187.89912pt x 187.89757pt.
+ [5 <./code/cross_entropy_loss_k=5.png> <./code/k=5_W_visulization.png> <./code
+/cross_entropy_loss_k=10.png> <./code/k=10_W_visulization.png>]
+<code/problem_d_IC_926.png, id=52, 462.528pt x 346.896pt>
+File: code/problem_d_IC_926.png Graphic file (type png)
+
+<use code/problem_d_IC_926.png>
+Package pdftex.def Info: code/problem_d_IC_926.png used on input line 244.
+(pdftex.def)             Requested size: 234.87749pt x 176.15768pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [6 <./code/cross_entropy_loss_k=20.png> <./code/k=20_W_visulization.png> <./co
+de/generated_samples.png> <./code/generated_samples_k=20.png>]
+<code/Autoencoder_compare.png, id=60, 462.528pt x 346.896pt>
+File: code/Autoencoder_compare.png Graphic file (type png)
+
+<use code/Autoencoder_compare.png>
+Package pdftex.def Info: code/Autoencoder_compare.png used on input line 256.
+(pdftex.def)             Requested size: 187.89912pt x 140.92615pt.
+
+<code/Autoencoder_W_visulize.png, id=61, 722.7pt x 722.7pt>
+File: code/Autoencoder_W_visulize.png Graphic file (type png)
+
+<use code/Autoencoder_W_visulize.png>
+Package pdftex.def Info: code/Autoencoder_W_visulize.png used on input line 261
+.
+(pdftex.def)             Requested size: 187.89912pt x 187.89757pt.
+
+<code/Denoise_Autoencoder_compare.png, id=62, 462.528pt x 346.896pt>
+File: code/Denoise_Autoencoder_compare.png Graphic file (type png)
+
+<use code/Denoise_Autoencoder_compare.png>
+Package pdftex.def Info: code/Denoise_Autoencoder_compare.png used on input lin
+e 275.
+(pdftex.def)             Requested size: 187.89912pt x 140.92615pt.
+
+<code/Denoise_Autoencoder_W_visulize.png, id=63, 722.7pt x 722.7pt>
+File: code/Denoise_Autoencoder_W_visulize.png Graphic file (type png)
+
+<use code/Denoise_Autoencoder_W_visulize.png>
+Package pdftex.def Info: code/Denoise_Autoencoder_W_visulize.png used on input 
+line 280.
+(pdftex.def)             Requested size: 187.89912pt x 187.89757pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+Underfull \vbox (badness 1460) has occurred while \output is active []
+
+ [7 <./code/problem_d_IC_926.png> <./code/Autoencoder_compare.png> <./code/Auto
+encoder_W_visulize.png>] <code/problem_g_hidden50.png, id=71, 462.528pt x 346.8
+96pt>
+File: code/problem_g_hidden50.png Graphic file (type png)
+
+<use code/problem_g_hidden50.png>
+Package pdftex.def Info: code/problem_g_hidden50.png used on input line 294.
+(pdftex.def)             Requested size: 187.89912pt x 140.92615pt.
+
+<code/problem_g_hidden100.png, id=72, 462.528pt x 346.896pt>
+File: code/problem_g_hidden100.png Graphic file (type png)
+
+<use code/problem_g_hidden100.png>
+Package pdftex.def Info: code/problem_g_hidden100.png used on input line 294.
+(pdftex.def)             Requested size: 187.89912pt x 140.92615pt.
+
+<code/problem_g_hidden200.png, id=73, 462.528pt x 346.896pt>
+File: code/problem_g_hidden200.png Graphic file (type png)
+
+<use code/problem_g_hidden200.png>
+Package pdftex.def Info: code/problem_g_hidden200.png used on input line 300.
+(pdftex.def)             Requested size: 187.89912pt x 140.92615pt.
+
+<code/problem_g_hidden500.png, id=74, 462.528pt x 346.896pt>
+File: code/problem_g_hidden500.png Graphic file (type png)
+
+<use code/problem_g_hidden500.png>
+Package pdftex.def Info: code/problem_g_hidden500.png used on input line 300.
+(pdftex.def)             Requested size: 187.89912pt x 140.92615pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[8 <./code/Denoise_Autoencoder_compare.png> <./code/Denoise_Autoencoder_W_visul
+ize.png>] [9 <./code/problem_g_hidden50.png> <./code/problem_g_hidden100.png> <
+./code/problem_g_hidden200.png> <./code/problem_g_hidden500.png>]
+(./hw2_solution.aux) ) 
 Here is how much of TeX's memory you used:
- 3205 strings out of 493014
- 43886 string characters out of 6133352
- 108900 words of memory out of 5000000
- 6690 multiletter control sequences out of 15000+600000
- 7951 words of font info for 32 fonts, out of 8000000 for 9000
+ 3307 strings out of 493014
+ 47033 string characters out of 6133352
+ 110900 words of memory out of 5000000
+ 6768 multiletter control sequences out of 15000+600000
+ 8250 words of font info for 33 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,9n,26p,334b,189s stack positions out of 5000i,500n,10000p,200000b,80000s
- </Users/yuanliu/Library/texlive/2016/texmf-var/f
-onts/pk/ljfour/public/bbm/bbm10.600pk></usr/local/texlive/2016/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2016/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2016/texmf-dist/fonts/t
-ype1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2016/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2016/texmf-dist/fonts/typ
-e1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1
-/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmr10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/pub
-lic/amsfonts/cm/cmr12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmr5.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmr7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsf
-onts/cm/cmsl10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfo
-nts/cm/cmsy10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfon
-ts/cm/cmsy5.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmsy7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/c
-m/cmti10.pfb>
-Output written on hw2_solution.pdf (4 pages, 165964 bytes).
+ 38i,9n,26p,287b,321s stack positions out of 5000i,500n,10000p,200000b,80000s
+ </Users/yuanliu/Library/texlive/2016/texmf-var/fonts/pk/
+ljfour/public/bbm/bbm10.600pk></usr/local/texlive/2016/texmf-dist/fonts/type1/p
+ublic/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmex10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmmi7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmr10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmr12.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfon
+ts/cm/cmr5.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmr7.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmr8.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cms
+l10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy
+10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5
+.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.p
+fb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pf
+b>
+Output written on hw2_solution.pdf (9 pages, 1682537 bytes).
 PDF statistics:
- 82 PDF objects out of 1000 (max. 8388607)
- 59 compressed objects within 1 object stream
+ 142 PDF objects out of 1000 (max. 8388607)
+ 75 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 96 words of extra memory for PDF output out of 10000 (max. 10000000)
 

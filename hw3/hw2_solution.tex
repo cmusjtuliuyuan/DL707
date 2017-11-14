@@ -1,0 +1,140 @@
+\documentclass[twoside]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algorithm}  
+\usepackage{algorithmicx}  
+\usepackage{algpseudocode}  
+\usepackage{amsmath,bm}
+\usepackage{bbm}  
+
+  
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}  
+\renewcommand{\algorithmicensure}{\textbf{Output:}} 
+\DeclareMathOperator*{\argmax}{arg\,max}
+\usepackage{epsfig} 
+\usepackage{graphicx}
+\usepackage{subfigure}
+
+\setlength{\oddsidemargin}{0.25 in}
+\setlength{\evensidemargin}{-0.25 in}
+\setlength{\topmargin}{-0.6 in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{8.5 in}
+\setlength{\headsep}{0.75 in}
+\setlength{\parindent}{0 in}
+\setlength{\parskip}{0.1 in}
+
+\newcommand{\lecture}[3]{
+   \pagestyle{myheadings} 
+   \thispagestyle{plain}
+   \newpage
+   \setcounter{page}{1}
+   \noindent
+   \begin{center}
+   \framebox{
+      \vbox{\vspace{2mm}
+    \hbox to 6.28in { {\bf 10-707: Deep Learning, Fall 2017 \hfill} }
+       \vspace{6mm}
+       \hbox to 6.28in { {\Large \hfill #1  \hfill} }
+       \vspace{6mm}
+       \hbox to 6.28in { {\it Lecturer: #2 \hfill Name: #3} }
+      \vspace{2mm}}
+   }
+   \end{center}
+   \markboth{#1}{#1}
+   \vspace*{4mm}
+}
+
+\begin{document}
+
+\lecture{Homework 3}{Russ Salakhutdinov }{Yuan Liu(yuanl4)} % Lecture name, Lecturer, Scribes
+\section{Problem 1, 4-gram language model}
+\begin{itemize}
+\item \textbf{Embedding layer:} 
+	\begin{itemize}
+	\item \textbf{Input}: three word index:$w_{i-1}, w_{i-2}, w_{i-3}$. 
+	\item \textbf{Parameters:} A 2-dimensional matrix $\bm{C}$ of size $V \times D$.
+	\item \textbf{Output:} Vector representations for these three words: $\bm{C}_{w_{i-1},:}, \bm{C}_{w_{i-2},:}, \bm{C}_{w_{i-3},:}$, where $\bm{C}_{j,:}$ means the $j^{th}$ row of the matrix $\bm{C}$.
+	\end{itemize}
+\item \textbf{Embedding to Hidden:}
+	\begin{itemize}
+	\item \textbf{Input}: $\bm{C}_{w_{i-1},:}, \bm{C}_{w_{i-2},:}, \bm{C}_{w_{i-3},:}$ from the output of the embedding layer. The size of each element of input $1\times D$.
+	\item \textbf{Parameters}: Three embed\_to\_hidden\_weights matrix $\bm{W}^{(1)}, \bm{W}^{(2)},\bm{W}^{(3)}$, each matrix's size is $D\times H$. A hidden\_bias vector $\bm{b}^{hidden}$ of size $1 \times H$.
+	\item \textbf{Output}: $\bm{C}_{w_{i-1},:}\bm{W}^{(1)}+ \bm{C}_{w_{i-2},:}\bm{W}^{(2)} + \bm{C}_{w_{i-3},:}\bm{W}^{(3)}+\bm{b}^{hidden}$
+	\end{itemize}
+\item \textbf{Tanh Layer}: 
+	\begin{itemize}
+	\item \textbf{Input}: $\bm{A}=\bm{C}_{w_{i-1},:}\bm{W}^{(1)}+ \bm{C}_{w_{i-2},:}\bm{W}^{(2)} + \bm{C}_{w_{i-3},:}\bm{W}^{(3)}+\bm{b}^{hidden}$ of size $1\times H$
+	\item \textbf{Parameters:} None
+	\item \textbf{Output}: $tanh(\bm{A})$
+	\end{itemize}
+\item \textbf{Hidden to Output:}
+	\begin{itemize}
+	\item \textbf{Input}: $\bm{H} = tanh(\bm{A})$ of size $1\times H$.
+	\item \textbf{Parameters}: The hidden\_to\_output\_weight $\bm{W}^{out}$ of size $H\times V$and the output\_bias $\bm{b}^{out}$ of size $1\times V$.
+	\item \textbf{Output}: $\bm{HW}^{out}+\bm{b}^{out}$
+	\end{itemize}
+\item \textbf{Softmax layer:}
+	\begin{itemize}
+	\item \textbf{Input}: $\bm{O} = \bm{HW}^{out}+\bm{b}^{out}$ of size $1\times V$.
+	\item \textbf{Parameters}: None
+	\item \textbf{Output}: $\bm{S}_i = \frac{e^{\bm{O}_i}}{\sum_{j=1}^{V}e^{\bm{O}_j}}$, $\bm{S}$ is a matrix of size $1\times V$.
+	\end{itemize}
+\item \textbf{Loss:} $loss= -\log{\bm{S}_{w_i}}$
+\end{itemize}
+\paragraph{} Now we can calculate the derivation:
+$$\frac{\partial loss}{\partial \bm{S}_{w_i}} = -\frac{1}{\bm{S}_{w_i}}$$
+$$\frac{\partial \bm{S}_{w_i}}{\partial \bm{O}_j} = \frac{1(w_i = j)e^{\bm{O}_{w_i}}(\sum_{k=1}^{V}e^{\bm{O}_k}) - e^{\bm{O}_{w_i}}e^{\bm{O}_{j}}}{(\sum_{k=1}^{V}e^{\bm{O}_k})^2}$$
+$$\frac{\partial loss}{\partial \bm{O}_{j}}= \frac{\partial loss}{\partial \bm{S}_{w_i}}\frac{\partial \bm{S}_{w_i}}{\partial \bm{O}_j}=-(1(w_i=j)-\bm{S}_j) $$
+$$\frac{\partial \bm{O}_j}{\partial \bm{H}_i} = \bm{W^{out}}_{i,j}, \ \frac{\partial \bm{O}_j}{\partial \bm{W}^{out}_{i,j}} = \bm{H}_{i}, \ \frac{\partial \bm{O}_j}{\partial \bm{b}^{out}_j} = 1$$
+$$\frac{\partial loss}{\partial \bm{H}_{i}} =\sum_{j=1}^{V} \frac{\partial loss}{\partial \bm{O}_{j}} \frac{\partial \bm{O}_j}{\partial \bm{H}_i}$$
+$$\frac{\partial loss}{\partial \bm{W}^{out}_{i,j}}=\frac{\partial loss}{\partial \bm{O}_{j}}\frac{\partial \bm{O}_j}{\partial \bm{W}^{out}_{i,j}}= -(1(w_i=j)-\bm{S}_j)\bm{H}_{i} \eqno{(1)}$$
+$$\frac{\partial loss}{\partial \bm{b}^{out}_{i}} = \frac{\partial loss}{\partial \bm{O}_{i}}\frac{\partial \bm{O}_i}{\partial \bm{b}^{out}_{i}}=-(1(w_i=i)-\bm{S}_i)\eqno{(2)}$$
+$$\frac{\partial \bm{H_j}}{\partial \bm{A}_i}=(1-\bm{H}_j^2)*1(i=j)$$
+$$\frac{\partial \bm{A}_i}{\partial \bm{C}_{w_{i-1}, j}}=\bm{W}^{(1)}_{j,i},\ \frac{\partial \bm{A}_i}{\partial \bm{C}_{w_{i-2}, j}}=\bm{W}^{(2)}_{j,i}, \ \frac{\partial \bm{A}_i}{\partial \bm{C}_{w_{i-3}, j}}=\bm{W}^{(3)}_{j,i}$$
+$$\frac{\partial loss}{\partial \bm{C}_{w_{i-1}, j}} =\sum_{i,k} \frac{\partial loss}{\partial \bm{H}_{i}}\frac{\partial \bm{H_i}}{\partial \bm{A}_k}\frac{\partial \bm{A}_k}{\partial \bm{C}_{w_{i-1}, j}}=\sum_{i} \frac{\partial loss}{\partial \bm{H}_{i}}\frac{\partial \bm{H_i}}{\partial \bm{A}_i}\frac{\partial \bm{A}_i}{\partial \bm{C}_{w_{i-1}, j}}
+=\sum_{i} \frac{\partial loss}{\partial \bm{H}_{i}}(1-\bm{H}_i^2)\bm{W}^{(1)}_{j,i}$$
+$$\frac{\partial loss}{\partial \bm{C}_{w_{i-1}, j}}=\sum_{i} \frac{\partial loss}{\partial \bm{H}_{i}}(1-\bm{H}_i^2)\bm{W}^{(1)}_{j,i} \eqno{(3)}$$
+$$\frac{\partial loss}{\partial \bm{C}_{w_{i-2}, j}}=\sum_{i} \frac{\partial loss}{\partial \bm{H}_{i}}(1-\bm{H}_i^2)\bm{W}^{(2)}_{j,i} \eqno{(4)}$$
+$$\frac{\partial loss}{\partial \bm{C}_{w_{i-3}, j}}=\sum_{i} \frac{\partial loss}{\partial \bm{H}_{i}}(1-\bm{H}_i^2)\bm{W}^{(3)}_{j,i} \eqno{(5)}$$
+$$\frac{\partial \bm{A}_j}{\partial \bm{W}^{(1)}_{i,j}}= \bm{C}_{w_{i-1}, i},\ \frac{\partial \bm{A}_j}{\partial \bm{W}^{(2)}_{i,j}}= \bm{C}_{w_{i-2}, i},\ \frac{\partial \bm{A}_j}{\partial \bm{W}^{(3)}_{i,j}}= \bm{C}_{w_{i-3}, i}$$
+
+$$\frac{\partial loss}{\partial \bm{W}^{(1)}_{i,j}} = \frac{\partial loss}{\partial \bm{H}_{j}}(1-\bm{H}_j)^2\bm{C}_{w_{i-1}, i}\eqno{(6)}$$
+$$\frac{\partial loss}{\partial \bm{W}^{(2)}_{i,j}} = \frac{\partial loss}{\partial \bm{H}_{j}}(1-\bm{H}_j)^2\bm{C}_{w_{i-2}, i}\eqno{(7)}$$
+$$\frac{\partial loss}{\partial \bm{W}^{(3)}_{i,j}} = \frac{\partial loss}{\partial \bm{H}_{j}}(1-\bm{H}_j)^2\bm{C}_{w_{i-3}, i}\eqno{(8)}$$
+$$\frac{\partial \bm{A}_i}{\partial \bm{b}^{hidden}_{j}}=1(i=j)$$
+$$\frac{\partial loss}{\partial \bm{b}^{hidden}_{j}} = \frac{\partial loss}{\partial \bm{H}_{j}}(1-\bm{H}_j)^2\eqno{(9)}$$
+\paragraph{} The derivation of weights is listed in (1)~(9)
+
+
+
+\section{Problem 2, LSTM \& GRU}
+\begin{itemize}
+\item[(a)] LSTM contains 3 gates: \emph{input} gates $i_t$, \emph{forget} gates $f_t$ and \emph{output} gates $o_t$.\\
+GRU contains 2 gates: \emph{update} gate $z_t$ and \emph{reset} gate $r_t$.
+\item[(b)]LSTM:
+\begin{itemize}
+	\item \emph{forget} gate: to decide what information should be throw away form the cell state. $1$ means `completely remember' and $0$ means `completely forget'.
+	\item \emph{input} gate: to decide which value in the cell state should be updated.  $1$ means `add' and $0$ means `ignore'.
+	\item \emph{output} gate: to decide what to output. $1$ means `output' and $0$ means `don't output'.
+\end{itemize}
+GRU:
+\begin{itemize}
+	\item \emph{update} gate: to decide which value from $\tilde{h}_t$ should be added to $h_t$ and what value from $h_{t-1}$ should be forget. $1$ means the corresponding value from  $\tilde{h}_t$ should be remembered and the corresponding value from $h_{t-1}$ should be forgot.
+	\item \emph{reset} gate: to decide what part of $h_{t-1}$ should be computed to get $\tilde{h}_t$.
+\end{itemize}
+\item [(c)] The output of LSTM is the memory unit $\bm{C}$ and hidden content $h$. The output of GRU only contains the hidden content $h$.
+The LSTM controls the flow of information according to  both $\bm{C}$ and $h$, while the GRU only expose the full hidden content without any control.
+\item [(d)]
+LSTM: $W_f: n\times m$, $U_f: n\times n$, $b_f: n$, $W_i: n\times m$, $U_i: n\times n$, $b_i: n$,$W_o: n\times m$, $U_o: n\times n$, $b_o: n$, $W_c: n\times m$, $U_c: n\times n$, $b_c: n$. Totally, the LSTM contains $4(n^2+mn+n)$ parameters.\\
+GRU:$W_z: n\times m$, $U_z: n\times n$, $b_z: n$, $W_r: n\times m$, $U_r: n\times n$, $b_r: n$,$W: n\times m$, $U: n\times n$, $b: n$. Totally, the GRU contains $3(n^2+mn+n)$ parameters.
+\item[(e)] The GRU might take less time to train. Because GRU contains fewer parameters than the LSTM. Moreover, GRU only contains 2 gates and its structure is simpler, so it will be more computationally efficient.
+\end{itemize}
+
+
+\section{Problem 3}
+
+
+\end{document}
+
+\grid

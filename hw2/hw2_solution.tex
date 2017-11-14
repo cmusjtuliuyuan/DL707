@@ -54,24 +54,24 @@
 \item The input image is a 2-D matrix $X$, the size is $d\times d$.
 \item Convolutional Layer: the parameter of feature map $i \in \{1,2\}$ is $W^{i}$. They are two 2-D matrixes, the size of each matrix is $k\times k$.\\
 
-The output of the convolutional layer is two 2-D matrixes $Y^{i},i \in \{1,2\}$, the size of each matrix is $\frac{d-k+1}{s}\times \frac{d-k+1}{s}$
+The output of the convolutional layer is two 2-D matrixes $Y^{i},i \in \{1,2\}$, the size of each matrix is $(\frac{d-k}{s}+1)\times (\frac{d-k}{s}+1)$
 $$Y_{m,n}^i = \sum_{p=1}^k \sum_{q=1}^k X_{(m-1)s + p, (n-1)s+q} W_{p,q}^i$$
 Then we can get:
 $$\frac{\partial Y_{m,n}^i }{\partial W_{p,q}^i} = X_{(m-1)s + p, (n-1)s+q} \eqno{(1)}$$
 
-The derivation input of the convolutional layer is two 2-D matrix $\frac{\partial Loss}{\partial Y^{i}},i \in \{1,2\}$, the size of each matrix is $\frac{d-k+1}{s}\times \frac{d-k+1}{s}$.
+The derivation input of the convolutional layer is two 2-D matrix $\frac{\partial Loss}{\partial Y^{i}},i \in \{1,2\}$, the size of each matrix is $(\frac{d-k}{s}+1)\times (\frac{d-k}{s}+1)$.
 Then we can get:
-$$\frac{\partial Loss}{\partial W_{p,q}^i} = \sum_{m,n=1}^{\frac{d-k+1}{s}}\frac{\partial Loss}{ \partial Y^i}_{m,n} \frac{\partial Y_{m,n}^i }{\partial W_{p,q}^i}
-=\sum_{m,n=1}^{\frac{d-k+1}{s}}\frac{\partial Loss}{ \partial Y^i}_{m,n} X_{(m-1)s + p, (n-1)s+q}$$
+$$\frac{\partial Loss}{\partial W_{p,q}^i} = \sum_{m,n=1}^{\frac{d-k}{s}+1}\frac{\partial Loss}{ \partial Y^i}_{m,n} \frac{\partial Y_{m,n}^i }{\partial W_{p,q}^i}
+=\sum_{m,n=1}^{\frac{d-k}{s}+1}\frac{\partial Loss}{ \partial Y^i}_{m,n} X_{(m-1)s + p, (n-1)s+q}$$
 
-\item Pooling Layer: The output of pooling layer is two 2-D matrixes $P^{i},i \in \{1,2\}$, the size of each matrix is $(\frac{d-k+1}{s}-p+1)\times (\frac{d-k+1}{s}-p+1)$.
+\item Pooling Layer: The output of pooling layer is two 2-D matrixes $P^{i},i \in \{1,2\}$, the size of each matrix is $(\frac{d-k}{s}-p+2)\times (\frac{d-k}{s}-p+2)$.
 $$P^{k}_{m,n} = \max_{i,j \in \{1,...,p\}} Y^k_{m+i-1,n+j-1} $$
-The derivation input of the pooling layer is two 2-D matrix $\frac{\partial Loss}{\partial P^{i}},i \in \{1,2\}$, the size of each matrix is $(\frac{d-k+1}{s}-p+1)\times (\frac{d-k+1}{s}-p+1)$.
+The derivation input of the pooling layer is two 2-D matrix $\frac{\partial Loss}{\partial P^{i}},i \in \{1,2\}$, the size of each matrix is $(\frac{d-k}{s}-p+2)\times (\frac{d-k}{s}-p+2)$.
 Then we gan get the derivation output is:
 $$\frac{\partial P^k_{m,n}}{\partial Y^K_{m+i-1,n+j-1}} = \mathbbm{1}(i,j = \argmax_{i,j}Y^k_{m+i-1,n+j-1}) \eqno{(2)}$$
 $$\frac{\partial Loss}{\partial Y^{k}}_{m,n} = \sum_{i,j=1}^p \frac{\partial Loss}{\partial P^k}_{m+i-1, n+j-1} \mathbbm{1}(i,j = \argmax_{i,j \in \{1,...,p\}} Y^k_{m+i-1,n+j-1})$$
 
-\item Flatten Layer, which convert the two 2-dimension matrixes into a vector. The length of this vector is $2(\frac{d-k+1}{s}-p+1)^2$.
+\item Flatten Layer, which convert the two 2-dimension matrixes into a vector. The length of this vector is $2(\frac{d-k}{s}-p+2)^2$.
 %$$F_i = P^{k}_{m , n}$$
 %$$k = \lceil \frac{i}{(\frac{d-k+1}{s}-p+1)^2} \rceil$$
 %$$m=\lceil \frac{i-(\frac{d-k+1}{s}-p+1)^2(k-1)}{\frac{d-k+1}{s}-p+1}\rceil $$
@@ -80,7 +80,7 @@ $$P_{m,n}^k = F_{(k-1)*(\frac{d-k+1}{s}-p+1)^2+(m-1)*(\frac{d-k+1}{s}-p+1)+n}$$
 $$\frac{\partial P_{m,n}^k}{\partial F_{i}} = \mathbbm{1}(i=  (k-1)*(\frac{d-k+1}{s}-p+1)^2+(m-1)*(\frac{d-k+1}{s}-p+1)+n) \eqno{(3)}$$
 $$\frac{\partial Loss}{\partial P^{k}_{m , n}}=\frac{\partial Loss}{\partial F_{(k-1)*(\frac{d-k+1}{s}-p+1)^2+(m-1)*(\frac{d-k+1}{s}-p+1)+n}}$$
 
-\item Softmax Layer: Assume $k=2(\frac{d-k+1}{s}-p+1)^2$, the output of this softmax layer is a vector $S$, which size is k.
+\item Softmax Layer: Assume $k=2(\frac{d-k}{s}-p+2)^2$, the output of this softmax layer is a vector $S$, which size is k.
 $$S_i = \frac{e^{F_i}}{\sum_{j=1}^k e^{F_j}} $$
 The derivation input of the softmax layer is a vector $\frac{\partial Loss}{\partial S}$, which size is k.
 $$\frac{\partial S_i}{\partial F_j} = \frac{\frac{e^{F_i}}{\partial F_j} (\sum_{j=1}^k e^{F_j}) - e^{F_i}e^{F_j}}{(\sum_{j=1}^k e^{F_j})^2}
@@ -126,7 +126,7 @@ p_\theta(h|v)&=\frac{p(v,h)}{p(h)} =\frac{\frac{1}{Z}exp(v^TWh + v^Tb + h^T a)}{
 &=\frac{\exp(v^TWh + h^Ta)}{\sum_h exp(v^TWh + h^Ta) }\\
 &=\frac{\prod_{i=1}^Pexp(h_i(W^Tv +a)_{i})}{\sum_{h_1} exp(h_1(W^Tv +a)_{1}) \times \sum_{h_2} exp(h_2(W^Tv +a)_{2})\times...\times\sum_{h_P} exp(h_P(W^Tv +a)_{P})}\\
 &=\prod_{i=1}^P \frac{exp(h_i(W^Tv +a)_{i})}{\sum_{h_i\in\{0,1\} }exp(h_i(W^Tv +a)_{i})}\\
-&=\prod_{j=1}^P \sigma (h_i(W^Tv +a)_{i})
+&=\prod_{i=1}^P \sigma (h_i(W^Tv +a)_{i})
 \end{align*}
 
 \begin{align*}
