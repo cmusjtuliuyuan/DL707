@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import cPickle
 import optparse
 
-BATCH_SIZE = 32
+BATCH_SIZE = 512
 LEARNING_RATE = 0.1
 EPOCH_NUM = 100
 
@@ -68,6 +68,7 @@ class LanuageModel():
         return self.S
 
     def fit_batch(self, w1, w2, w3, w4):
+    	batch_size = w1.shape[0]
         self.forward(w1,w2,w3)
         Labels = np.zeros((w4.shape[0], self.vocab_size))
         Labels[np.arange(w4.shape[0]), w4] = 1
@@ -75,7 +76,8 @@ class LanuageModel():
         d_loss_d_O = self.S - Labels
         # d_loss_d_H: [batch_size, hidden_dim]
         d_loss_d_H = d_loss_d_O.dot(self.W_out.T)
-        d_loss_d_W_out = np.array([np.outer(H,dO) for dO, H in zip(d_loss_d_O, self.H)])
+        d_loss_d_W_out = self.H.T.dot(d_loss_d_O)
+        #np.array([np.outer(H,dO) for dO, H in zip(d_loss_d_O, self.H)])
         d_loss_d_b_out = d_loss_d_O
         if self.Linear:
             d_loss_d_A = d_loss_d_H
@@ -84,20 +86,20 @@ class LanuageModel():
         d_loss_d_c1 = d_loss_d_A.dot(self.W1.T)
         d_loss_d_c2 = d_loss_d_A.dot(self.W2.T)
         d_loss_d_c3 = d_loss_d_A.dot(self.W3.T)
-        d_loss_d_W1 = np.array([np.outer(c,h) for c, h in zip(self.C1, d_loss_d_A)])
-        d_loss_d_W2 = np.array([np.outer(c,h) for c, h in zip(self.C2, d_loss_d_A)])
-        d_loss_d_W3 = np.array([np.outer(c,h) for c, h in zip(self.C3, d_loss_d_A)])
+        d_loss_d_W1 = self.C1.T.dot(d_loss_d_A)#np.array([np.outer(c,h) for c, h in zip(self.C1, d_loss_d_A)])
+        d_loss_d_W2 = self.C2.T.dot(d_loss_d_A)#np.array([np.outer(c,h) for c, h in zip(self.C2, d_loss_d_A)])
+        d_loss_d_W3 = self.C3.T.dot(d_loss_d_A)#np.array([np.outer(c,h) for c, h in zip(self.C3, d_loss_d_A)])
         d_loss_d_b_hidden = d_loss_d_A
 
         # updata parameters
         self.C[w1,:] -= LEARNING_RATE*np.mean(d_loss_d_c1, axis=0)
         self.C[w2,:] -= LEARNING_RATE*np.mean(d_loss_d_c2, axis=0)
         self.C[w3,:] -= LEARNING_RATE*np.mean(d_loss_d_c3, axis=0)
-        self.W1 -= LEARNING_RATE*np.mean(d_loss_d_W1, axis=0)
-        self.W2 -= LEARNING_RATE*np.mean(d_loss_d_W2, axis=0)
-        self.W3 -= LEARNING_RATE*np.mean(d_loss_d_W3, axis=0)
+        self.W1 -= LEARNING_RATE*d_loss_d_W1/batch_size
+        self.W2 -= LEARNING_RATE*d_loss_d_W2/batch_size
+        self.W3 -= LEARNING_RATE*d_loss_d_W3/batch_size
         self.b_hidden -= LEARNING_RATE*np.mean(d_loss_d_b_hidden, axis=0, keepdims=True)
-        self.W_out -= LEARNING_RATE*np.mean(d_loss_d_W_out, axis=0) 
+        self.W_out -= LEARNING_RATE*d_loss_d_W_out/batch_size
         self.b_out -= LEARNING_RATE*np.mean(d_loss_d_b_out, axis=0, keepdims=True)
         # calculate loss
         loss = np.mean([-np.log(s[i]) for s, i in zip(self.S, w4)])
@@ -149,9 +151,13 @@ def train(model, train_data, valid_data):
     for i in range(EPOCH_NUM):
         print 'EPOCH_NUM:', i
         model.fit(train_data)
-        train_loss.append(model.get_loss(train_data))
-        valid_loss.append(model.get_loss(valid_data))
-        perplexity.append(model.get_perplexity(valid_data))
+        tl = model.get_loss(train_data)
+        vl = model.get_loss(valid_data)
+        per = model.get_perplexity(valid_data)
+        train_loss.append(tl)
+        valid_loss.append(vl)
+        perplexity.append(per)
+        print 'train loss:',tl,'valid loss:', vl, 'perplexity', per
     return train_loss, valid_loss, perplexity
 
 def plot_loss_perplexity(train_loss, valid_loss, perplexity,hidden_dim, prefix):
@@ -180,7 +186,6 @@ def main():
     hidden_dim = opts.hidden
     if opts.type == 'Linear':
         Linear, prefix = True, 'Linear'
-        prefix = 'Linear'
     else:
         Linear, prefix = False, 'NoLinear'
 
