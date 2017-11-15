@@ -7,7 +7,6 @@ import optparse
 
 BATCH_SIZE = 512
 LEARNING_RATE = 0.1
-EPOCH_NUM = 100
 
 optparser = optparse.OptionParser()
 optparser.add_option(
@@ -18,7 +17,18 @@ optparser.add_option(
     "--hidden", default=128,
     type='int', help="Hidden dimension"
 )
-
+optparser.add_option(
+    "--save", default='a.model',
+    type='str', help="where to store the model"
+)
+optparser.add_option(
+    "--load", default='a.model',
+    type='str', help="which model to load"
+)
+optparser.add_option(
+    "--epoch", default=100,
+    type='int', help="Number of Epoch to train"
+)
 def rand_init(dim1, dim2):
     return (2*np.random.rand(dim1, dim2)-1)\
                 *math.sqrt(3.0/(dim1+dim2))
@@ -143,12 +153,12 @@ class LanuageModel():
         perplexity = self.loop_data(X, self.get_perplexity_batch)
         return 2**(-perplexity)
 
-def train(model, train_data, valid_data):
+def train(model, train_data, valid_data, epoch_num):
     train_loss = [model.get_loss(train_data),]
     valid_loss = [model.get_loss(valid_data),]
     perplexity = [model.get_perplexity(valid_data),]
 
-    for i in range(EPOCH_NUM):
+    for i in range(epoch_num):
         print 'EPOCH_NUM:', i
         model.fit(train_data)
         tl = model.get_loss(train_data)
@@ -159,6 +169,37 @@ def train(model, train_data, valid_data):
         perplexity.append(per)
         print 'train loss:',tl,'valid loss:', vl, 'perplexity', per
     return train_loss, valid_loss, perplexity
+
+def predict(model, dictionary, str, length):
+    #Convert str to index:
+    word_to_id = dictionary['word_to_id']
+    str_list = str.split()
+    w1 = [word_to_id[str_list[0]],]
+    w2 = [word_to_id[str_list[1]],]
+    w3 = [word_to_id[str_list[2]],]
+    #Predict
+    sent_list = [w1, w2, w3]
+    for _ in range(length):
+        S = model.forward(sent_list[-3], sent_list[-2], sent_list[-1])
+        new_w = np.argmax(S, axis=1).tolist()
+        sent_list.append(new_w)
+    #Convert index to word
+    id_to_word = dictionary['id_to_word']
+    sen_len = len(sent_list)
+    num_sent = len(sent_list[0])
+    for i in range(num_sent):
+        for j in range(sen_len):
+            print id_to_word[sent_list[j][i]],
+        print
+
+def distance(model, dictionary, word1, word2):
+    word_to_id = dictionary['word_to_id']
+    index1 = word_to_id['word1']
+    index2 = word_to_id['word2']
+    e1, e2 = model.C[index1,:], model.C[index2,:]
+    distance = np.linalg.norm(e1-e2)
+    return distance
+
 
 def plot_loss_perplexity(train_loss, valid_loss, perplexity,hidden_dim, prefix):
     # Plot Loss
@@ -183,7 +224,9 @@ def plot_loss_perplexity(train_loss, valid_loss, perplexity,hidden_dim, prefix):
 
 def main():
     opts = optparser.parse_args()[0]
+    
     hidden_dim = opts.hidden
+    EPOCH_NUM = opts.epoch
     if opts.type == 'Linear':
         Linear, prefix = True, 'Linear'
     else:
@@ -192,10 +235,21 @@ def main():
     traindataset, dictionary = get_train_dataset('train.txt')
     valdataset = get_val_dataset('val.txt', dictionary)
     model = LanuageModel(hidden_dim=hidden_dim, Linear=Linear)
-    train_loss, valid_loss, perplexity = train(model, traindataset, valdataset)
-    plot_loss_perplexity(train_loss, valid_loss, perplexity, model.hidden_dim, prefix)
-    with open('hidden_dim=%dLinear=%s.model'%(hidden_dim, Linear), 'wb') as f:
+    train_loss, valid_loss, perplexity = train(model, traindataset, valdataset,opts.epoch)
+    #plot_loss_perplexity(train_loss, valid_loss, perplexity, model.hidden_dim, prefix)
+    with open(opts.save, 'wb') as f:
         cPickle.dump(model, f)
+    '''
+    _, dictionary = get_train_dataset('train.txt')
+    with open(opts.load, 'rb') as f:
+        model = cPickle.load(f)
+    predict(model, dictionary,'the company said',10)
+    predict(model, dictionary,'new york stock',10)
+    predict(model, dictionary,'the company said',10)
+    predict(model, dictionary,'president and chief',10)
+    #predict(model, dictionary,'life in the',10)
+    #predict(model, dictionary,'see you then',10)
+    '''
 
 if __name__ == '__main__':
     main()

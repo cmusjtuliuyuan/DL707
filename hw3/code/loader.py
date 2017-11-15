@@ -94,4 +94,4 @@ def plot_dataset(dataset, dictionary):
 
 #traindataset, dictionary = get_train_dataset('train.txt')
 #valdataset = get_val_dataset('val.txt', dictionary)
-#plot_dataset(dataset, dictionary)
+#plot_dataset(traindataset, dictionary)
